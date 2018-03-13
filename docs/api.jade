@@ -4,7 +4,7 @@ append style
   link(rel="stylesheet", href="/docs/css/api.css")
 
 block content
-  h1 API Docs
+  h1 API中文文档
 
   each item in docs
     hr.separate-api
@@ -17,12 +17,12 @@ block content
         a(href="##{prop.anchorId}")
           | #{prop.string}
       if prop.param != null
-        h5 Parameters
+        h5 参数
         ul.params
           each param in prop.param
             li.param #{param.name} <span class="method-type">&laquo;#{param.types}&raquo;</span> !{param.description}
       if prop.return != null
-        h5 Returns:
+        h5 返回值:
         ul
           li <span class="method-type">&laquo;#{prop.return.types}&raquo;</span> #{prop.return.description}
       div
