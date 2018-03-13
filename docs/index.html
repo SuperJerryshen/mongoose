@@ -11,8 +11,8 @@
 <p><em>首先确认您已经安装了 <a href="http://www.mongodb.org/downloads">MongoDB</a> 和 <a href="http://nodejs.org/">Node.js</a>。</em></p>
 <p>然后通过<code>npm</code>在控制台运行以下代码：</p>
 <pre><code>$ npm install mongoose
-</code></pre><p>我们喜欢毛绒绒的猫咪，而且我们希望能够在<code>MongoDB</code>中，记录每一只我们见过的猫咪。
-我们需要做的第一件事，就是在项目中导入<code>mongoose</code>，并在我们本地运行的MongoDB实例中，打开一个<code>test</code>数据库的连接。</p>
+</code></pre><p>我们喜欢毛绒绒的猫咪，而且希望能够在<code>MongoDB</code>中，记录每一只我们见过的猫咪。
+现在需要做的第一件事，就是在项目中导入<code>mongoose</code>，并在本地运行的MongoDB实例中，打开一个<code>test</code>数据库的连接。</p>
 <pre><code class="lang-javascript"><span class="hljs-comment">// getting-started.js</span>
 <span class="hljs-keyword">var</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
 mongoose.connect(<span class="hljs-string">'mongodb://localhost/test'</span>);
