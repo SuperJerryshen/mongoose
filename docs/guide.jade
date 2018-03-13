@@ -1,16 +1,16 @@
 extends layout
 
 block content
-  h2 Schemas
+  h2 模式（Schemas）
   .important
     :markdown
-      If you haven't yet done so, please take a minute to read the [quickstart](./index.html) to get an idea of how Mongoose works.
-      If you are migrating from 4.x to 5.x please take a moment to read the [migration guide](https://github.com/Automattic/mongoose/blob/master/migrating_to_5.md).
+      如果你还接触过Mongoose，请务必花几分钟阅读一下[快速开始](./index.html)，可以让你对Mongoose如何工作有一个初步的概念。
+      如果你正在从`4.x`升级到`5.x`，请您花几分钟阅读一下[迁移指南](https://github.com/Automattic/mongoose/blob/master/migrating_to_5.md).
   :markdown
-    <h3 id="definition"><a href="#definition">Defining your schema</a></h3>
+    <h3 id="definition"><a href="#definition">定义你的schema</a></h3>
 
-    Everything in Mongoose starts with a Schema. Each schema maps to a MongoDB
-    collection and defines the shape of the documents within that collection.
+    在Mongoose中的所有东西都是开始于Schema的。每一个Schema对应于一个MongoDB的集合，
+    并且基于那个集合，定义了文档的格式。
 
     ```javascript
       var mongoose = require('mongoose');
@@ -30,18 +30,17 @@ block content
       });
     ```
 
-    If you want to add additional keys later, use the
-    [Schema#add](./api.html#schema_Schema-add) method.
+    如果你想在后面添加额外的键值，请使用
+    [Schema#add](./api.html#schema_Schema-add)方法。
 
-    Each key in our code `blogSchema` defines a property in our documents which
-    will be cast to its associated [SchemaType](./api.html#schematype_SchemaType).
-    For example, we've defined a property `title` which will be cast to the
-    [String](./api.html#schema-string-js) SchemaType and property `date`
-    which will be cast to a `Date` SchemaType. Keys may also be assigned
-    nested objects containing further key/type definitions like
-    the `meta` property above.
+    代码中，`blogSchema`每一个`key`定义的文档属性，
+    会被映射成它相应的[SchemaType](./api.html#schematype_SchemaType)。
+    例如，我们已经定义了一个`title`属性，它的SchemaType将会被映射为
+    [String](./api.html#schema-string-js)，而对于`date`属性，
+    其SchemaType将会被映射为`Date`。键值也可以是嵌套对象，
+    包含更深一层的`key/type`对，就像上例中的`meta`属性。
 
-    The permitted SchemaTypes are:
+    允许的SchemaTypes有:
 
     * String
     * Number
@@ -52,42 +51,41 @@ block content
     * ObjectId
     * Array
 
-    Read more about [SchemaTypes here](./schematypes.html).
+    了解更多，关于[SchemaTypes](./schematypes.html)。
 
-    Schemas not only define the structure of your document and casting of
-    properties, they also define document [instance methods](#methods),
-    [static Model methods](#statics), [compound indexes](#indexes),
-    and document lifecycle hooks called [middleware](./middleware.html)
+    Schemas不仅定义了文档的结构和类型的映射，
+    还定义了文档的[实例方法](#methods)，
+    [静态Model方法](#statics), [复合索引](#indexes),
+    以及叫做[中间件](./middleware.html)的文档生命周期钩子。
 
-    <h3 id="models"><a href="#models">Creating a model</a></h3>
+    <h3 id="models"><a href="#models">创建一个model</a></h3>
 
-    To use our schema definition, we need to convert our `blogSchema` into a
-    [Model](./models.html) we can work with.
-    To do so, we pass it into `mongoose.model(modelName, schema)`:
+    为了使用我们定义的Schema，我们需要将`blogSchema`转换为
+    我们可以使用的[Model](./models.html)。
+    为了这么做，我们需要将它传递到`mongoose.model(modelName, schema)`中:
 
     ```javascript
       var Blog = mongoose.model('Blog', blogSchema);
-      // ready to go!
+      // 准备开始！
     ```
 
-    <h3 id="methods"><a href="#methods">Instance methods</a></h3>
+    <h3 id="methods"><a href="#methods">实例方法</a></h3>
 
-    Instances of `Models` are [documents](./documents.html). Documents have
-    many of their own [built-in instance methods](./api.html#document-js).
-    We may also define our own custom document instance methods too.
+    `Models`的实例就是[documents](./documents.html)。
+    Documents拥有许多它们自己的[内建实例方法](./api.html#document-js)。
+    我们也可以定义自己的文档实例方法。
 
     ```javascript
-      // define a schema
+      // 定义一个schema
       var animalSchema = new Schema({ name: String, type: String });
 
-      // assign a function to the "methods" object of our animalSchema
+      // 给animalSchema的"methods"对象分配一个函数
       animalSchema.methods.findSimilarTypes = function(cb) {
         return this.model('Animal').find({ type: this.type }, cb);
       };
     ```
 
-    Now all of our `animal` instances have a `findSimilarTypes` method available
-    to them.
+    现在我们所有的`animal`实例，都拥有一个`findSimilarTypes`方法。
 
     ```javascript
       var Animal = mongoose.model('Animal', animalSchema);
@@ -98,16 +96,16 @@ block content
       });
     ```
 
-    * Overwriting a default mongoose document method may lead to unpredictable results. See [this](./api.html#schema_Schema.reserved) for more details.
-    * Do **not** declare methods using ES6 arrow functions (`=>`). Arrow functions [explicitly prevent binding `this`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions#No_binding_of_this), so your method will **not** have access to the document and the above examples will not work.
+    * 覆盖默认的mongoose文档方法，可能会导致不可预料的后果。了解更多保留字，详见[Schema.reserved](./api.html#schema_Schema.reserved)。
+    * **不要**使用箭头函数(`=>`)，来定义方法。因为箭头函数[未绑定`this`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions#No_binding_of_this)，所以你的方法**没有**途径获取文档，因此上例中的代码就不能正常工作。
 
-    <h3 id="statics"><a href="#statics">Statics</a></h3>
+    <h3 id="statics"><a href="#statics">静态方法</a></h3>
 
-    Adding static methods to a `Model` is simple as well. Continuing with our
-    `animalSchema`:
+    给`Model`添加一个静态方法也非常简单。
+    继续我们的`animalSchema`:
 
     ```javascript
-      // assign a function to the "statics" object of our animalSchema
+      // 给animalSchema的"statics"，分配一个函数属性
       animalSchema.statics.findByName = function(name, cb) {
         return this.find({ name: new RegExp(name, 'i') }, cb);
       };
@@ -118,13 +116,13 @@ block content
       });
     ```
 
-    _Do **not** declare statics using ES6 arrow functions (`=>`). Arrow functions [explicitly prevent binding `this`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions#No_binding_of_this), so the above examples will not work because of the value of `this`._
+    _ **不要**使用箭头函数(`=>`)，来定义方法。因为箭头函数[未绑定`this`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions#No_binding_of_this)，所以你的方法**没有**途径获取文档，因此上例中的代码就不能正常工作。_    
 
-    <h3 id="query-helpers"><a href="#query-helpers">Query Helpers</a></h3>
+    <h3 id="query-helpers"><a href="#query-helpers">辅助查询函数</a></h3>
 
-    You can also add query helper functions, which are like instance methods
-    but for mongoose queries. Query helper methods let you extend mongoose's
-    [chainable query builder API](./queries.html).
+    你也可以添加辅助查询的函数，它就像实例方法一样，
+    但是只是对于mongoose的查询。辅助查询函数让你可以扩展mongoose的
+    [链式查询生成器API](./queries.html)。
 
     ```javascript
       animalSchema.query.byName = function(name) {
@@ -137,12 +135,12 @@ block content
       });
     ```
 
-    <h3 id="indexes"><a href="#indexes">Indexes</a></h3>
+    <h3 id="indexes"><a href="#indexes">索引</a></h3>
 
-    MongoDB supports [secondary indexes](http://docs.mongodb.org/manual/indexes/).
-    With mongoose, we define these indexes within our `Schema` [at](./api.html#schematype_SchemaType-index) [the](./api.html#schematype_SchemaType-unique) [path](./api.html#schematype_SchemaType-sparse) [level](./api.html#schema_date_SchemaDate-expires) or the `schema` level.
-    Defining indexes at the schema level is necessary when creating
-    [compound indexes](https://docs.mongodb.com/manual/core/index-compound/).
+    MongoDB支持[二级索引](http://docs.mongodb.org/manual/indexes/)。
+    通过mongoose，我们[在](./api.html#schematype_SchemaType-index) [这个](./api.html#schematype_SchemaType-unique) [路径](./api.html#schematype_SchemaType-sparse) [层](./api.html#schema_date_SchemaDate-expires)或`schema`层，通过`Schema`定义这些索引。
+    当生成[混合索引](https://docs.mongodb.com/manual/core/index-compound/)时，
+    在schema层定义索引是非常必要的。
 
     ```javascript
       var animalSchema = new Schema({
