@@ -2,11 +2,14 @@ extends layout
 
 block content
   :markdown
-    ## Populate
+    ## 填充(Populate)
 
-    MongoDB has the join-like [$lookup](https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/) aggregation operator in versions >= 3.2. Mongoose has a more powerful alternative called `populate()`, which lets you reference documents in other collections.
+    MongoDB在 >= 3.2 的版本中，加入了类似链接的[$lookup](https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/) 集成算子。
+    Mongoose有一个更强大替代方案叫做 `populate()`，它可以让你在其他集合中查询文档。
 
-    Population is the process of automatically replacing the specified paths in the document with document(s) from other collection(s). We may populate a single document, multiple documents, plain object, multiple plain objects, or all objects returned from a query. Let's look at some examples.
+    填充（Population）就是自动从其他collection的document，替换规定的路径下的document的过程。
+    我们可以填充单个的document，多个document，纯对象，多级纯对象，或者从查询返回的所有对象。
+    让我们看一下一些例子。
 
     ```javascript
     var mongoose = require('mongoose');
@@ -29,20 +32,18 @@ block content
     var Person = mongoose.model('Person', personSchema);
     ```
 
-    So far we've created two [Models](./models.html). Our `Person` model has
-    its `stories` field set to an array of `ObjectId`s. The `ref` option is
-    what tells Mongoose which model to use during population, in our case
-    the `Story` model. All `_id`s we store here must be document `_id`s from
-    the `Story` model.
+    目前，我们已经创建了两个[Models](./models.html)。
+    `Person` model的`stories`字段设置为一个`ObjectId`的数组。
+    `ref`选项告诉了Mongoose在填充时，会使用哪一个model。
+    在我们的例子中，就是`Story`model。
+    所有我们在这里存储的`_id`，必须是来自于`Story`model中文档的_id。
 
-    **Note**: `ObjectId`, `Number`, `String`, and `Buffer` are valid for use
-    as refs. However, you should use `ObjectId` unless you are an advanced
-    user and have a good reason for doing so.
+    **注意**: 虽然`ObjectId`, `Number`, `String`, and `Buffer`作为refs是合法的。
+    但是，你应该使用 `ObjectId`，除非你是一个高级用户，而且有足够的理由使用它。
 
-    <h3 id="saving-refs"><a href="#saving-refs">Saving refs</a></h3>
+    <h3 id="saving-refs"><a href="#saving-refs">保存 refs</a></h3>
 
-    Saving refs to other documents works the same way you normally save
-    properties, just assign the `_id` value:
+    向其他文档保存refs，和其他保存值得方法一样，只是指定了 `_id` 的值：
 
     ```javascript
     var author = new Person({
@@ -66,11 +67,10 @@ block content
     });
     ```
 
-    <h3 id="population"><a href="#population">Population</a></h3>
+    <h3 id="population"><a href="#population">填充</a></h3>
 
-    So far we haven't done anything much different. We've merely created a
-    `Person` and a `Story`. Now let's take a look at populating our story's
-    `author` using the query builder:
+    目前，我们还没有做太多不一样的事情。我们只不过创建了 `Person` 和 `Story`。
+    现在让我们看一下如何使用查询构建，来填充story的 `author` ：
 
     ```javascript
     Story.
@@ -79,21 +79,20 @@ block content
       exec(function (err, story) {
         if (err) return handleError(err);
         console.log('The author is %s', story.author.name);
-        // prints "The author is Ian Fleming"
+        // 打印 "The author is Ian Fleming"
       });
     ```
 
-    Populated paths are no longer set to their original `_id` , their value
-    is replaced with the mongoose document returned from the database by
-    performing a separate query before returning the results.
+    通过在返回值之前，数据库会运行一个单独的查询，填充路径就不再是初始的 `_id`了，
+    他们的值将会被mongoose文档的返回值代替。
 
-    Arrays of refs work the same way. Just call the
-    [populate](./api.html#query_Query-populate) method on the query and an
-    array of documents will be returned _in place_ of the original `_id`s.
+    数组形式的refs也一样。
+    只是调用 [populate](./api.html#query_Query-populate) 方法的返回值也会是数组形式，
+    每一个`_id`都会被单独的文档_代替_。
 
-    <h3 id="setting-populated-fields"><a href="#setting-populated-fields">Setting Populated Fields</a></h3>
+    <h3 id="setting-populated-fields"><a href="#setting-populated-fields">设置填充的字段</a></h3>
 
-    In Mongoose >= 4.0, you can manually populate a field as well.
+    在 >= 4.0 的Mongoose版本中，你也可以手动填充一个字段。
 
     ```javascript
     Story.findOne({ title: 'Casino Royale' }, function(error, story) {
@@ -101,16 +100,15 @@ block content
         return handleError(error);
       }
       story.author = author;
-      console.log(story.author.name); // prints "Ian Fleming"
+      console.log(story.author.name); // 打印 "Ian Fleming"
     });
     ```
 
-    <h3 id="field-selection"><a href="#field-selection">Field Selection</a></h3>
+    <h3 id="field-selection"><a href="#field-selection">字段选择</a></h3>
 
-    What if we only want a few specific fields returned for the populated
-    documents? This can be accomplished by passing the usual
-    [field name syntax](./api.html#query_Query-select) as the second argument
-    to the populate method:
+    如果我们只想返回一些特定的字段，该怎么办呢？
+    可以通过在调用`populate`方法时，
+    传入[field name syntax](./api.html#query_Query-select)作为第二个参数就行了：
 
     ```javascript
     Story.
@@ -127,9 +125,9 @@ block content
       });
     ```
 
-    <h3 id="populating-multiple-paths"><a href="#populating-multiple-paths">Populating Multiple Paths</a></h3>
+    <h3 id="populating-multiple-paths"><a href="#populating-multiple-paths">填充多路径（Populating Multiple Paths）</a></h3>
 
-    What if we wanted to populate multiple paths at the same time?
+    如果我们想同时填充多个路径，该怎么办呢？
 
     ```javascript
     Story.
@@ -139,17 +137,16 @@ block content
       exec();
     ```
 
-    If you call `populate()` multiple times with the same path, only the last
-    one will take effect.
+    我们在相同路径，调用 `populate()` 多次时，只有最后一个才会生效。
 
     ```javascript
-    // The 2nd `populate()` call below overwrites the first because they
-    // both populate 'fans'.
+    // 第二次调用的`populate()`会覆盖第一次的
+    // 因为他们都是'fans'的填充
     Story.
       find().
       populate({ path: 'fans', select: 'name' }).
       populate({ path: 'fans', select: 'email' });
-    // The above is equivalent to:
+    // 等同于：
     Story.find().populate({ path: 'fans', select: 'email' });
     ```
 

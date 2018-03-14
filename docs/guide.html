@@ -120,9 +120,11 @@ Documents拥有许多它们自己的<a href="./api.html#document-js">内建实�
 
   animalSchema.index({ name: <span class="hljs-number">1</span>, type: <span class="hljs-number">-1</span> }); <span class="hljs-comment">// schema level</span>
 </code></pre>
-<p>When your application starts up, Mongoose automatically calls <a href="https://docs.mongodb.com/manual/reference/method/db.collection.createIndex/#db.collection.createIndex"><code>createIndex</code></a> for each defined index in your schema.
-Mongoose will call <code>createIndex</code> for each index sequentially, and emit an &#39;index&#39; event on the model when all the <code>createIndex</code> calls succeeded or when there was an error.
-While nice for development, it is recommended this behavior be disabled in production since index creation can cause a <a href="http://docs.mongodb.org/manual/core/indexes/#index-creation-operations">significant performance impact</a>. Disable the behavior by setting the <code>autoIndex</code> option of your schema to <code>false</code>, or globally on the connection by setting the option <code>autoIndex</code> to <code>false</code>.</p>
+<p>当你的应用启动时，<code>Mongoose</code>为了在<code>Schema</code>中定义索引，将自动调用<a href="https://docs.mongodb.com/manual/reference/method/db.collection.createIndex/#db.collection.createIndex"><code>createIndex</code></a>。
+<code>Mongoose</code>将会对每个索引，按照顺序调用<code>createIndex</code>，并且会在所有的<code>createIndex</code>调用成功或发生错误时，在<code>model</code>上触发<code>index</code>事件。
+在开发中这样非常好，但是生成索引会导致<a href="http://docs.mongodb.org/manual/core/indexes/#index-creation-operations">显著的性能影响</a>，所以我们推荐在正式环境中关闭此功能。
+通过在<code>Schema</code>中设置<code>autoIndex</code>为<code>false</code>来关闭自动生成索引，
+或者在<code>connection</code>全局设置<code>autoIndex</code>为<code>false</code>。</p>
 <pre><code class="lang-javascript">  mongoose.connect(<span class="hljs-string">'mongodb://user:pass@localhost:port/database'</span>, { autoIndex: <span class="hljs-literal">false</span> });
   <span class="hljs-comment">// or</span>
   mongoose.createConnection(<span class="hljs-string">'mongodb://user:pass@localhost:port/database'</span>, { autoIndex: <span class="hljs-literal">false</span> });
@@ -131,8 +133,7 @@ While nice for development, it is recommended this behavior be disabled in produ
   <span class="hljs-comment">// or</span>
   <span class="hljs-keyword">new</span> Schema({..}, { autoIndex: <span class="hljs-literal">false</span> });
 </code></pre>
-<p>Mongoose will emit an <code>index</code> event on the model when indexes are done
-building or an error occurred.</p>
+<p>Mongoose将会在索引生成完毕或发生错误时，触发<code>index</code>事件。</p>
 <pre><code class="lang-javascript">  <span class="hljs-comment">// Will cause an error because mongodb has an _id index by default that</span>
   <span class="hljs-comment">// is not sparse</span>
   animalSchema.index({ _id: <span class="hljs-number">1</span> }, { sparse: <span class="hljs-literal">true</span> });
@@ -143,8 +144,8 @@ building or an error occurred.</p>
     <span class="hljs-built_in">console</span>.log(error.message);
   });
 </code></pre>
-<p>See also the <a href="./api.html#model_Model.ensureIndexes">Model#ensureIndexes</a> method.</p>
-<h3 id="virtuals"><a href="#virtuals">Virtuals</a></h3>
+<p>您也可以查看<a href="./api.html#model_Model.ensureIndexes">Model#ensureIndexes</a>方法。</p>
+<h3 id="virtuals"><a href="#virtuals">虚拟类型(Virtuals)</a></h3>
 
 <p><a href="./api.html#schema_Schema-virtual">Virtuals</a> are document properties that
 you can get and set but that do not get persisted to MongoDB. The getters

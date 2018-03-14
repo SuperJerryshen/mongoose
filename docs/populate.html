@@ -1,6 +1,9 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Mongoose v5.0.10: Query Population</title><link rel="apple-touch-icon" sizes="57x57" href="images/favicon/apple-icon-57x57.png"><link rel="apple-touch-icon" sizes="60x60" href="images/favicon/apple-icon-60x60.png"><link rel="apple-touch-icon" sizes="72x72" href="images/favicon/apple-icon-72x72.png"><link rel="apple-touch-icon" sizes="76x76" href="images/favicon/apple-icon-76x76.png"><link rel="apple-touch-icon" sizes="114x114" href="images/favicon/apple-icon-114x114.png"><link rel="apple-touch-icon" sizes="120x120" href="images/favicon/apple-icon-120x120.png"><link rel="apple-touch-icon" sizes="144x144" href="images/favicon/apple-icon-144x144.png"><link rel="apple-touch-icon" sizes="152x152" href="images/favicon/apple-icon-152x152.png"><link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-icon-180x180.png"><link rel="icon" type="image/png" sizes="192x192" href="images/favicon/android-icon-192x192.png"><link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="96x96" href="images/favicon/favicon-96x96.png"><link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png"><link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans"><link rel="stylesheet" href="/docs/css/github.css"><link rel="stylesheet" href="/docs/css/mongoose5.css"><link rel="apple-touch-icon" sizes="57x57" href="images/favicon/apple-icon-57x57.png"><link rel="apple-touch-icon" sizes="60x60" href="images/favicon/apple-icon-60x60.png"><link rel="apple-touch-icon" sizes="72x72" href="images/favicon/apple-icon-72x72.png"><link rel="apple-touch-icon" sizes="76x76" href="images/favicon/apple-icon-76x76.png"><link rel="apple-touch-icon" sizes="114x114" href="images/favicon/apple-icon-114x114.png"><link rel="apple-touch-icon" sizes="120x120" href="images/favicon/apple-icon-120x120.png"><link rel="apple-touch-icon" sizes="144x144" href="images/favicon/apple-icon-144x144.png"><link rel="apple-touch-icon" sizes="152x152" href="images/favicon/apple-icon-152x152.png"><link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-icon-180x180.png"><link rel="icon" type="image/png" sizes="192x192" href="images/favicon/android-icon-192x192.png"><link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="96x96" href="images/favicon/favicon-96x96.png"><link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png"><link rel="manifest" href="images/favicon/manifest.json"><meta name="msapplication-TileColor" content="#ffffff"><meta name="msapplication-TileImage" content="images/favicon/ms-icon-144x144.png"><meta name="theme-color" content="#ffffff"></head><body><div id="layout"><div id="mobile-menu"><a id="menuLink" href="#menu" class="menu-link"><span></span></a><div id="mobile-logo-container"><a href="/"><img id="logo" src="/docs/images/mongoose5_62x30_transparent.png"><span class="logo-text">mongoose</span></a></div></div><div id="menu"><div class="pure-menu"><div id="logo-container" class="pure-menu-heading"><a href="/"><img id="logo" src="/docs/images/mongoose5_62x30_transparent.png"><span class="logo-text">mongoose</span></a></div><ul class="pure-menu-list"><li class="pure-menu-horizontal pure-menu-item pure-menu-has-children pure-menu-allow-hover version"><a href="#" class="pure-menu-link">版本号 5.0.10</a><ul class="pure-menu-children"><li class="pure-menu-item"><a href="/docs/4.x" class="pure-menu-link">版本号 4.13.11</a></li><li class="pure-menu-item"><a href="/docs/3.8.x" class="pure-menu-link">版本号 3.8.40</a></li></ul></li><li class="pure-menu-item"><a href="/docs/index.html" class="pure-menu-link">快速开始 (Quick Start)</a></li><li class="pure-menu-item"><a href="/docs/guide.html" class="pure-menu-link">模式 (Schemas)</a></li><li class="pure-menu-item sub-item"><a href="/docs/schematypes.html" class="pure-menu-link">模式类型 (SchemaTypes)</a></li><li class="pure-menu-item sub-item"><a href="/docs/connections.html" class="pure-menu-link">连接 (Connections)</a></li><li class="pure-menu-item sub-item"><a href="/docs/models.html" class="pure-menu-link">模型 (Models)</a></li><li class="pure-menu-item sub-item"><a href="/docs/documents.html" class="pure-menu-link">文档 (Documents)</a></li><li class="pure-menu-item sub-item"><a href="/docs/subdocs.html" class="pure-menu-link">子文档 (Subdocuments)</a></li><li class="pure-menu-item sub-item"><a href="/docs/queries.html" class="pure-menu-link">查询 (Queries)</a></li><li class="pure-menu-item sub-item"><a href="/docs/validation.html" class="pure-menu-link">验证 (Validation)</a></li><li class="pure-menu-item sub-item"><a href="/docs/middleware.html" class="pure-menu-link">中间件 (Middleware)</a></li><li class="pure-menu-item sub-item"><a href="/docs/populate.html" class="pure-menu-link">填充 (Populate)</a></li><li class="pure-menu-item sub-item"><a href="/docs/discriminators.html" class="pure-menu-link">鉴别器 (Discriminators)</a></li><li class="pure-menu-item sub-item"><a href="/docs/plugins.html" class="pure-menu-link">插件 (Plugins)</a></li><li class="pure-menu-item sub-item"><a href="/docs/lambda.html" class="pure-menu-link">亚马逊网络服务 (AWS Lambda)</a></li><li class="pure-menu-item"><a href="/docs/api.html" class="pure-menu-link">接口 (API)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Schema" class="pure-menu-link">模式 (Schema)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Connection" class="pure-menu-link">连接 (Connection)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Document" class="pure-menu-link">文档 (Document)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Model" class="pure-menu-link">模型 (Model)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Query" class="pure-menu-link">查询 (Query)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Aggregate" class="pure-menu-link">聚合 (Aggregate)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Schematype" class="pure-menu-link">模式类型 (SchemaType)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Virtualtype" class="pure-menu-link">虚拟类型 (VirtualType)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Error" class="pure-menu-link">错误 (Error)</a></li><li class="pure-menu-item"><a href="/docs/compatibility.html" class="pure-menu-link">版本兼容性</a></li><li class="pure-menu-item"><a href="/docs/faq.html" class="pure-menu-link">常见问题 (FAQ)</a></li><li class="carbon-ad"><script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=mongoosejscom" id="_carbonads_js"></script></li></ul></div></div><div class="container"><div id="content"><h2 id="populate">Populate</h2>
-<p>MongoDB has the join-like <a href="https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/">$lookup</a> aggregation operator in versions &gt;= 3.2. Mongoose has a more powerful alternative called <code>populate()</code>, which lets you reference documents in other collections.</p>
-<p>Population is the process of automatically replacing the specified paths in the document with document(s) from other collection(s). We may populate a single document, multiple documents, plain object, multiple plain objects, or all objects returned from a query. Let&#39;s look at some examples.</p>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Mongoose v5.0.10: Query Population</title><link rel="apple-touch-icon" sizes="57x57" href="images/favicon/apple-icon-57x57.png"><link rel="apple-touch-icon" sizes="60x60" href="images/favicon/apple-icon-60x60.png"><link rel="apple-touch-icon" sizes="72x72" href="images/favicon/apple-icon-72x72.png"><link rel="apple-touch-icon" sizes="76x76" href="images/favicon/apple-icon-76x76.png"><link rel="apple-touch-icon" sizes="114x114" href="images/favicon/apple-icon-114x114.png"><link rel="apple-touch-icon" sizes="120x120" href="images/favicon/apple-icon-120x120.png"><link rel="apple-touch-icon" sizes="144x144" href="images/favicon/apple-icon-144x144.png"><link rel="apple-touch-icon" sizes="152x152" href="images/favicon/apple-icon-152x152.png"><link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-icon-180x180.png"><link rel="icon" type="image/png" sizes="192x192" href="images/favicon/android-icon-192x192.png"><link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="96x96" href="images/favicon/favicon-96x96.png"><link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png"><link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans"><link rel="stylesheet" href="/docs/css/github.css"><link rel="stylesheet" href="/docs/css/mongoose5.css"><link rel="apple-touch-icon" sizes="57x57" href="images/favicon/apple-icon-57x57.png"><link rel="apple-touch-icon" sizes="60x60" href="images/favicon/apple-icon-60x60.png"><link rel="apple-touch-icon" sizes="72x72" href="images/favicon/apple-icon-72x72.png"><link rel="apple-touch-icon" sizes="76x76" href="images/favicon/apple-icon-76x76.png"><link rel="apple-touch-icon" sizes="114x114" href="images/favicon/apple-icon-114x114.png"><link rel="apple-touch-icon" sizes="120x120" href="images/favicon/apple-icon-120x120.png"><link rel="apple-touch-icon" sizes="144x144" href="images/favicon/apple-icon-144x144.png"><link rel="apple-touch-icon" sizes="152x152" href="images/favicon/apple-icon-152x152.png"><link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-icon-180x180.png"><link rel="icon" type="image/png" sizes="192x192" href="images/favicon/android-icon-192x192.png"><link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="96x96" href="images/favicon/favicon-96x96.png"><link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png"><link rel="manifest" href="images/favicon/manifest.json"><meta name="msapplication-TileColor" content="#ffffff"><meta name="msapplication-TileImage" content="images/favicon/ms-icon-144x144.png"><meta name="theme-color" content="#ffffff"></head><body><div id="layout"><div id="mobile-menu"><a id="menuLink" href="#menu" class="menu-link"><span></span></a><div id="mobile-logo-container"><a href="/"><img id="logo" src="/docs/images/mongoose5_62x30_transparent.png"><span class="logo-text">mongoose</span></a></div></div><div id="menu"><div class="pure-menu"><div id="logo-container" class="pure-menu-heading"><a href="/"><img id="logo" src="/docs/images/mongoose5_62x30_transparent.png"><span class="logo-text">mongoose</span></a></div><ul class="pure-menu-list"><li class="pure-menu-horizontal pure-menu-item pure-menu-has-children pure-menu-allow-hover version"><a href="#" class="pure-menu-link">版本号 5.0.10</a><ul class="pure-menu-children"><li class="pure-menu-item"><a href="/docs/4.x" class="pure-menu-link">版本号 4.13.11</a></li><li class="pure-menu-item"><a href="/docs/3.8.x" class="pure-menu-link">版本号 3.8.40</a></li></ul></li><li class="pure-menu-item"><a href="/docs/index.html" class="pure-menu-link">快速开始 (Quick Start)</a></li><li class="pure-menu-item"><a href="/docs/guide.html" class="pure-menu-link">模式 (Schemas)</a></li><li class="pure-menu-item sub-item"><a href="/docs/schematypes.html" class="pure-menu-link">模式类型 (SchemaTypes)</a></li><li class="pure-menu-item sub-item"><a href="/docs/connections.html" class="pure-menu-link">连接 (Connections)</a></li><li class="pure-menu-item sub-item"><a href="/docs/models.html" class="pure-menu-link">模型 (Models)</a></li><li class="pure-menu-item sub-item"><a href="/docs/documents.html" class="pure-menu-link">文档 (Documents)</a></li><li class="pure-menu-item sub-item"><a href="/docs/subdocs.html" class="pure-menu-link">子文档 (Subdocuments)</a></li><li class="pure-menu-item sub-item"><a href="/docs/queries.html" class="pure-menu-link">查询 (Queries)</a></li><li class="pure-menu-item sub-item"><a href="/docs/validation.html" class="pure-menu-link">验证 (Validation)</a></li><li class="pure-menu-item sub-item"><a href="/docs/middleware.html" class="pure-menu-link">中间件 (Middleware)</a></li><li class="pure-menu-item sub-item"><a href="/docs/populate.html" class="pure-menu-link">填充 (Populate)</a></li><li class="pure-menu-item sub-item"><a href="/docs/discriminators.html" class="pure-menu-link">鉴别器 (Discriminators)</a></li><li class="pure-menu-item sub-item"><a href="/docs/plugins.html" class="pure-menu-link">插件 (Plugins)</a></li><li class="pure-menu-item sub-item"><a href="/docs/lambda.html" class="pure-menu-link">亚马逊网络服务 (AWS Lambda)</a></li><li class="pure-menu-item"><a href="/docs/api.html" class="pure-menu-link">接口 (API)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Schema" class="pure-menu-link">模式 (Schema)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Connection" class="pure-menu-link">连接 (Connection)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Document" class="pure-menu-link">文档 (Document)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Model" class="pure-menu-link">模型 (Model)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Query" class="pure-menu-link">查询 (Query)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Aggregate" class="pure-menu-link">聚合 (Aggregate)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Schematype" class="pure-menu-link">模式类型 (SchemaType)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Virtualtype" class="pure-menu-link">虚拟类型 (VirtualType)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Error" class="pure-menu-link">错误 (Error)</a></li><li class="pure-menu-item"><a href="/docs/compatibility.html" class="pure-menu-link">版本兼容性</a></li><li class="pure-menu-item"><a href="/docs/faq.html" class="pure-menu-link">常见问题 (FAQ)</a></li><li class="carbon-ad"><script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=mongoosejscom" id="_carbonads_js"></script></li></ul></div></div><div class="container"><div id="content"><h2 id="-populate-">填充(Populate)</h2>
+<p>MongoDB在 &gt;= 3.2 的版本中，加入了类似链接的<a href="https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/">$lookup</a> 集成算子。
+Mongoose有一个更强大替代方案叫做 <code>populate()</code>，它可以让你在其他集合中查询文档。</p>
+<p>填充（Population）就是自动从其他collection的document，替换规定的路径下的document的过程。
+我们可以填充单个的document，多个document，纯对象，多级纯对象，或者从查询返回的所有对象。
+让我们看一下一些例子。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
 <span class="hljs-keyword">var</span> Schema = mongoose.Schema;
 
@@ -20,18 +23,16 @@
 <span class="hljs-keyword">var</span> Story = mongoose.model(<span class="hljs-string">'Story'</span>, storySchema);
 <span class="hljs-keyword">var</span> Person = mongoose.model(<span class="hljs-string">'Person'</span>, personSchema);
 </code></pre>
-<p>So far we&#39;ve created two <a href="./models.html">Models</a>. Our <code>Person</code> model has
-its <code>stories</code> field set to an array of <code>ObjectId</code>s. The <code>ref</code> option is
-what tells Mongoose which model to use during population, in our case
-the <code>Story</code> model. All <code>_id</code>s we store here must be document <code>_id</code>s from
-the <code>Story</code> model.</p>
-<p><strong>Note</strong>: <code>ObjectId</code>, <code>Number</code>, <code>String</code>, and <code>Buffer</code> are valid for use
-as refs. However, you should use <code>ObjectId</code> unless you are an advanced
-user and have a good reason for doing so.</p>
-<h3 id="saving-refs"><a href="#saving-refs">Saving refs</a></h3>
+<p>目前，我们已经创建了两个<a href="./models.html">Models</a>。
+<code>Person</code> model的<code>stories</code>字段设置为一个<code>ObjectId</code>的数组。
+<code>ref</code>选项告诉了Mongoose在填充时，会使用哪一个model。
+在我们的例子中，就是<code>Story</code>model。
+所有我们在这里存储的<code>_id</code>，必须是来自于<code>Story</code>model中文档的_id。</p>
+<p><strong>注意</strong>: 虽然<code>ObjectId</code>, <code>Number</code>, <code>String</code>, and <code>Buffer</code>作为refs是合法的。
+但是，你应该使用 <code>ObjectId</code>，除非你是一个高级用户，而且有足够的理由使用它。</p>
+<h3 id="saving-refs"><a href="#saving-refs">保存 refs</a></h3>
 
-<p>Saving refs to other documents works the same way you normally save
-properties, just assign the <code>_id</code> value:</p>
+<p>向其他文档保存refs，和其他保存值得方法一样，只是指定了 <code>_id</code> 的值：</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> author = <span class="hljs-keyword">new</span> Person({
   _id: <span class="hljs-keyword">new</span> mongoose.Types.ObjectId(),
   name: <span class="hljs-string">'Ian Fleming'</span>,
@@ -52,43 +53,40 @@ author.save(<span class="hljs-function"><span class="hljs-keyword">function</spa
   });
 });
 </code></pre>
-<h3 id="population"><a href="#population">Population</a></h3>
+<h3 id="population"><a href="#population">填充</a></h3>
 
-<p>So far we haven&#39;t done anything much different. We&#39;ve merely created a
-<code>Person</code> and a <code>Story</code>. Now let&#39;s take a look at populating our story&#39;s
-<code>author</code> using the query builder:</p>
+<p>目前，我们还没有做太多不一样的事情。我们只不过创建了 <code>Person</code> 和 <code>Story</code>。
+现在让我们看一下如何使用查询构建，来填充story的 <code>author</code> ：</p>
 <pre><code class="lang-javascript">Story.
   findOne({ title: <span class="hljs-string">'Casino Royale'</span> }).
   populate(<span class="hljs-string">'author'</span>).
   exec(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err, story</span>) </span>{
     <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">return</span> handleError(err);
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'The author is %s'</span>, story.author.name);
-    <span class="hljs-comment">// prints "The author is Ian Fleming"</span>
+    <span class="hljs-comment">// 打印 "The author is Ian Fleming"</span>
   });
 </code></pre>
-<p>Populated paths are no longer set to their original <code>_id</code> , their value
-is replaced with the mongoose document returned from the database by
-performing a separate query before returning the results.</p>
-<p>Arrays of refs work the same way. Just call the
-<a href="./api.html#query_Query-populate">populate</a> method on the query and an
-array of documents will be returned <em>in place</em> of the original <code>_id</code>s.</p>
-<h3 id="setting-populated-fields"><a href="#setting-populated-fields">Setting Populated Fields</a></h3>
+<p>通过在返回值之前，数据库会运行一个单独的查询，填充路径就不再是初始的 <code>_id</code>了，
+他们的值将会被mongoose文档的返回值代替。</p>
+<p>数组形式的refs也一样。
+只是调用 <a href="./api.html#query_Query-populate">populate</a> 方法的返回值也会是数组形式，
+每一个<code>_id</code>都会被单独的文档<em>代替</em>。</p>
+<h3 id="setting-populated-fields"><a href="#setting-populated-fields">设置填充的字段</a></h3>
 
-<p>In Mongoose &gt;= 4.0, you can manually populate a field as well.</p>
+<p>在 &gt;= 4.0 的Mongoose版本中，你也可以手动填充一个字段。</p>
 <pre><code class="lang-javascript">Story.findOne({ title: <span class="hljs-string">'Casino Royale'</span> }, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error, story</span>) </span>{
   <span class="hljs-keyword">if</span> (error) {
     <span class="hljs-keyword">return</span> handleError(error);
   }
   story.author = author;
-  <span class="hljs-built_in">console</span>.log(story.author.name); <span class="hljs-comment">// prints "Ian Fleming"</span>
+  <span class="hljs-built_in">console</span>.log(story.author.name); <span class="hljs-comment">// 打印 "Ian Fleming"</span>
 });
 </code></pre>
-<h3 id="field-selection"><a href="#field-selection">Field Selection</a></h3>
+<h3 id="field-selection"><a href="#field-selection">字段选择</a></h3>
 
-<p>What if we only want a few specific fields returned for the populated
-documents? This can be accomplished by passing the usual
-<a href="./api.html#query_Query-select">field name syntax</a> as the second argument
-to the populate method:</p>
+<p>如果我们只想返回一些特定的字段，该怎么办呢？
+可以通过在调用<code>populate</code>方法时，
+传入<a href="./api.html#query_Query-select">field name syntax</a>作为第二个参数就行了：</p>
 <pre><code class="lang-javascript">Story.
   findOne({ title: <span class="hljs-regexp">/casino royale/i</span> }).
   populate(<span class="hljs-string">'author'</span>, <span class="hljs-string">'name'</span>). <span class="hljs-comment">// only return the Persons name</span>
@@ -102,24 +100,23 @@ to the populate method:</p>
     <span class="hljs-comment">// prints "The authors age is null'</span>
   });
 </code></pre>
-<h3 id="populating-multiple-paths"><a href="#populating-multiple-paths">Populating Multiple Paths</a></h3>
+<h3 id="populating-multiple-paths"><a href="#populating-multiple-paths">填充多路径（Populating Multiple Paths）</a></h3>
 
-<p>What if we wanted to populate multiple paths at the same time?</p>
+<p>如果我们想同时填充多个路径，该怎么办呢？</p>
 <pre><code class="lang-javascript">Story.
   find(...).
   populate(<span class="hljs-string">'fans'</span>).
   populate(<span class="hljs-string">'author'</span>).
   exec();
 </code></pre>
-<p>If you call <code>populate()</code> multiple times with the same path, only the last
-one will take effect.</p>
-<pre><code class="lang-javascript"><span class="hljs-comment">// The 2nd `populate()` call below overwrites the first because they</span>
-<span class="hljs-comment">// both populate 'fans'.</span>
+<p>我们在相同路径，调用 <code>populate()</code> 多次时，只有最后一个才会生效。</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// 第二次调用的`populate()`会覆盖第一次的</span>
+<span class="hljs-comment">// 因为他们都是'fans'的填充</span>
 Story.
   find().
   populate({ path: <span class="hljs-string">'fans'</span>, select: <span class="hljs-string">'name'</span> }).
   populate({ path: <span class="hljs-string">'fans'</span>, select: <span class="hljs-string">'email'</span> });
-<span class="hljs-comment">// The above is equivalent to:</span>
+<span class="hljs-comment">// 等同于：</span>
 Story.find().populate({ path: <span class="hljs-string">'fans'</span>, select: <span class="hljs-string">'email'</span> });
 </code></pre>
 <h3 id="query-conditions"><a href="#query-conditions">Query conditions and other options</a></h3>
