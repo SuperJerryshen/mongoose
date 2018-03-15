@@ -150,10 +150,10 @@ block content
     Story.find().populate({ path: 'fans', select: 'email' });
     ```
 
-    <h3 id="query-conditions"><a href="#query-conditions">Query conditions and other options</a></h3>
+    <h3 id="query-conditions"><a href="#query-conditions">查询条件和其他设置</a></h3>
 
-    What if we wanted to populate our fans array based on their age, select
-    just their names, and return at most, any 5 of them?
+    如果我们根据年龄填充我们的`fans`，
+    只选择了他们的名字，最多返回五个时，会怎么样呢？
 
     ```javascript
     Story.
@@ -161,19 +161,25 @@ block content
       populate({
         path: 'fans',
         match: { age: { $gte: 21 }},
-        // Explicitly exclude `_id`, see http://bit.ly/2aEfTdB
+        // 声明去掉 `_id`, 详见 http://bit.ly/2aEfTdB
         select: 'name -_id',
         options: { limit: 5 }
       }).
       exec();
     ```
 
-    <h3 id="refs-to-children"><a href="#refs-to-children">Refs to children</a></h3>
+    <h3 id="refs-to-children"><a href="#refs-to-children">子 Refs</a></h3>
 
+    如果使用 `author` 对象，我们可能无论如何都需要查找，但是却无法获取`stories`的列表。
+    这是因为 `story` 对象曾经被推到 `author.stories`过。
     We may find however, if we use the `author` object, we are unable to get a
     list of the stories. This is because no `story` objects were ever 'pushed'
     onto `author.stories`.
 
+    这里有两个观点。第一，你可能需要 `author` 知道哪些 `stories` 是他们自己的。
+    通常情况下，通过一个父节点，你的 `Schema` 应该是一对多关系中的多。
+    但是，如果你有必要去获得子节点的数组，你可以像下面这样，
+    通过 `push()` 向你的数组推document。
     There are two perspectives here. First, you may want the `author` know
     which stories are theirs. Usually, your schema should resolve
     one-to-many relationships by having a parent pointer in the 'many' side.
@@ -185,21 +191,20 @@ block content
     author.save(callback);
     ```
 
-    This allows us to perform a `find` and `populate` combo:
+    你可以链式运行 `find` 和 `populate`：
 
     ```javascript
     Person.
       findOne({ name: 'Ian Fleming' }).
-      populate('stories'). // only works if we pushed refs to children
+      populate('stories'). // 只有设置了ref才会起作用
       exec(function (err, person) {
         if (err) return handleError(err);
         console.log(person);
       });
     ```
 
-    It is debatable that we really want two sets of pointers as they may get
-    out of sync. Instead we could skip populating and directly `find()` the
-    stories we are interested in.
+    如果设置了两个指针是有问题的，可能会导致其失去同步。
+    我们可以跳过填充，直接在运行 `find()` 找到我们需要的stories。
 
     ```javascript
     Story.
@@ -210,31 +215,29 @@ block content
       });
     ```
 
-    The documents returned from
-    [query population](./api.html#query_Query-populate) become fully
-    functional, `remove`able, `save`able documents unless the
-    [lean](./api.html#query_Query-lean) option is specified. Do not confuse
-    them with [sub docs](./subdocs.html). Take caution when calling its
-    remove method because you'll be removing it from the database, not just
-    the array.
+    通过[query population](./api.html#query_Query-populate)返回的文档是完全函数化的。
+    除非规定了[lean](./api.html#query_Query-lean)值，
+    都可以通过`remove`或`save`删除和保存文档。
+    不要把这些和[sub docs](./subdocs.html)搞混了。
+    当调用`remove`方法时要当心一点，因为你不仅会把他从数组删除，还会把他从数据库中删除。
 
-    <h3 id="populate_an_existing_mongoose_document"><a href="#populate_an_existing_mongoose_document">Populating an existing document</a></h3>
+    <h3 id="populate_an_existing_mongoose_document"><a href="#populate_an_existing_mongoose_document">填充已生成的文档</a></h3>
 
-    If we have an existing mongoose document and want to populate some of its
-    paths, **mongoose >= 3.6** supports the
-    [document#populate()](./api.html#document_Document-populate) method.
+    如果我们想要填充一个已经生成过的mongoose文档，
+    在**mongoose >= 3.6**时，支持
+    [document#populate()](./api.html#document_Document-populate)方法。
 
-    <h3 id="populate_multiple_documents"><a href="#populate_multiple_documents">Populating multiple existing documents</a></h3>
+    <h3 id="populate_multiple_documents"><a href="#populate_multiple_documents">填充多个已生成的文档</a></h3>
 
-    If we have one or many mongoose documents or even plain objects
-    (_like [mapReduce](./api.html#model_Model.mapReduce) output_), we may
-    populate them using the [Model.populate()](./api.html#model_Model.populate)
-    method available in **mongoose >= 3.6**. This is what `document#populate()`
-    and `query#populate()` use to populate documents.
+    如果我们有一个或多个文档，或者普通的对象
+    (_类似于 [mapReduce](./api.html#model_Model.mapReduce) 的输出_)，
+    可以通过使用 [Model.populate()](./api.html#model_Model.populate)
+    （**mongoose >= 3.6 可用**） 填充他们。
+    这就是`document#populate()` 和 `query#populate()`填充文档的使用场景。
 
-    <h3 id="deep-populate"><a href="#deep-populate">Populating across multiple levels</a></h3>
+    <h3 id="deep-populate"><a href="#deep-populate">多级填充</a></h3>
 
-    Say you have a user schema which keeps track of the user's friends.
+    如果你有一个user的schema，它保存着user朋友的踪迹。
 
     ```javascript
     var userSchema = new Schema({
@@ -243,30 +246,31 @@ block content
     });
     ```
 
-    Populate lets you get a list of a user's friends, but what if you also
-    wanted a user's friends of friends? Specify the `populate` option to tell
-    mongoose to populate the `friends` array of all the user's friends:
+    填充让你可以获取user好友的列表，
+    但是你还想获取user好友的好友时，该怎么办呢？
+    你可以通过配置 `populate`选项，
+    告诉mongoose去填充所有user朋友的 `friends` 数组：
 
     ```javascript
     User.
       findOne({ name: 'Val' }).
       populate({
         path: 'friends',
-        // Get friends of friends - populate the 'friends' array for every friend
+        // 获取朋友的朋友的信息 - 对每一个friend填充 'friends' 信息
         populate: { path: 'friends' }
       });
     ```
 
-    <h3 id="cross-db-populate"><a href="#cross-db-populate">Populating across Databases</a></h3>
+    <h3 id="cross-db-populate"><a href="#cross-db-populate">通过数据库填充</a></h3>
 
-    Let's say you have a schema representing events, and a schema representing
-    conversations. Each event has a corresponding conversation thread.
+    现在有一个表示事件的schmea和一个表示会话的schema。
+    每一个事件有一个对应的会话索引。
 
     ```javascript
     var eventSchema = new Schema({
       name: String,
-      // The id of the corresponding conversation
-      // Notice there's no ref here!
+      // 对应的会话 id
+      // 注意：这里没有ref
       conversation: ObjectId
     });
     var conversationSchema = new Schema({
@@ -274,8 +278,7 @@ block content
     });
     ```
 
-    Also, suppose that events and conversations are stored in separate MongoDB
-    instances.
+    假设事件和会话存储在分开的MongoDB实例中。
 
     ```javascript
     var db1 = mongoose.createConnection('localhost:27000/db1');
@@ -285,10 +288,10 @@ block content
     var Conversation = db2.model('Conversation', conversationSchema);
     ```
 
-    In this situation, you will **not** be able to `populate()` normally.
-    The `conversation` field will always be null, because `populate()` doesn't
-    know which model to use. However,
-    [you can specify the model explicitly](./api.html#model_Model.populate).
+    在这种情况下，你将**不能**正常使用 `populate()` 方法。
+    `conversation` 字段总会返回 `null`，
+    因为 `populate()` 不知道使用哪一个 model。
+    但是，[你可以明确指定 model](./api.html#model_Model.populate)。
 
     ```javascript
     Event.
@@ -297,14 +300,14 @@ block content
       exec(function(error, docs) { /* ... */ });
     ```
 
-    This is known as a "cross-database populate," because it enables you to
-    populate across MongoDB databases and even across MongoDB instances.
+    这就是"跨数据库填充"，因为他让你可以通过
+    MongoDB数据库填充数据，甚至通过MongoDB实例。
 
-    <h3 id="dynamic-ref"><a href="#dynamic-ref">Dynamic References</a></h3>
+    <h3 id="dynamic-ref"><a href="#dynamic-ref">动态References</a></h3>
 
-    Mongoose can also populate from multiple collections at the same time.
-    Let's say you have a user schema that has an array of "connections" - a
-    user can be connected to either other users or an organization.
+    Mongoose 可以同时从不同的集合填充数据。
+    也就是说，拥有 "connections" 数组的user schema，
+    是可以连接到其他 user 或 organization。
 
     ```javascript
     var userSchema = new Schema({
@@ -321,15 +324,14 @@ block content
     var Organization = mongoose.model('Organization', organizationSchema);
     ```
 
-    The `refPath` property above means that mongoose will look at the
-    `connections.kind` path to determine which model to use for `populate()`.
-    In other words, the `refPath` property enables you to make the `ref`
-    property dynamic.
+    上例中的`refPath`属性，意思是mongoose 会向上查找 `connections.kind` 路径，
+    来决定使用哪一个model来进行`populate()`都会被单独的文档_代替_。
+    也就是说，`refPath` 可以让 `ref` 属性成为动态的。
 
     ```javascript
-    // Say we have one organization:
+    // 我们有一个 organization:
     // `{ _id: ObjectId('000000000000000000000001'), name: "Guns N' Roses", kind: 'Band' }`
-    // And two users:
+    // 和两个 users:
     // {
     //   _id: ObjectId('000000000000000000000002')
     //   name: 'Axl Rose',
@@ -352,15 +354,14 @@ block content
       });
     ```
 
-    <h3 id="populate-virtuals"><a href="#populate-virtuals">Populate Virtuals</a></h3>
+    <h3 id="populate-virtuals"><a href="#populate-virtuals">填充虚拟类型 (Populate Virtuals)</a></h3>
 
-    _New in 4.5.0_
+    _4.5.0 版本新增_
 
-    So far you've only populated based on the `_id` field. However, that's
-    sometimes not the right choice.
-    In particular, [arrays that grow without bound are a MongoDB anti-pattern](https://docs.mongodb.com/manual/tutorial/model-referenced-one-to-many-relationships-between-documents/).
-    Using mongoose virtuals, you can define more sophisticated relationships
-    between documents.
+    目前，你已经可以只通过 `_id` 填充数据。
+    然而，有时候就不是正确的选择了。尤其是当
+    [数组是 MongoDB anti-pattern时，其增长是没有限制的](https://docs.mongodb.com/manual/tutorial/model-referenced-one-to-many-relationships-between-documents/)时。
+    使用mongoose 虚拟类型时，你可以在文档之间定义更加精细的关系。
 
     ```javascript
     var PersonSchema = new Schema({
@@ -372,11 +373,12 @@ block content
       name: String
     });
     BandSchema.virtual('members', {
-      ref: 'Person', // The model to use
-      localField: 'name', // Find people where `localField`
-      foreignField: 'band', // is equal to `foreignField`
-      // If `justOne` is true, 'members' will be a single doc as opposed to
-      // an array. `justOne` is false by default.
+      ref: 'Person', // 使用的 model
+      localField: 'name', // 从 `localField` 中查找
+      foreignField: 'band', // 等同于 `foreignField`
+      // 如果 `justOne` 的值为 true, 'members' 将会是单个文档
+      // false时，则为一个数组
+      // `justOne` 默认值为 false
       justOne: false
     });
 
@@ -384,47 +386,47 @@ block content
     var Band = mongoose.model('Band', BandSchema);
 
     /**
-     * Suppose you have 2 bands: "Guns N' Roses" and "Motley Crue"
-     * And 4 people: "Axl Rose" and "Slash" with "Guns N' Roses", and
-     * "Vince Neil" and "Nikki Sixx" with "Motley Crue"
+     * 假设你有两个 bands："Guns N' Roses" 和 "Motley Crue"
+     * 和四个 people: "Axl Rose" 、 带有"Guns N' Roses" 的 "Slash"
+     * "Vince Neil" 和 带有"Motley Crue" 的 "Nikki Sixx"
      */
     Band.find({}).populate('members').exec(function(error, bands) {
-      /* `bands.members` is now an array of instances of `Person` */
+      /* `bands.members`为 `Person` 实例的一个数组 */
     });
     ```
 
-    Keep in mind that virtuals are _not_ included in `toJSON()` output by
-    default. If you want populate virtuals to show up when using functions
-    that rely on `JSON.stringify()`, like Express'
-    [`res.json()` function](http://expressjs.com/en/4x/api.html#res.json),
-    set the `virtuals: true` option on your schema's `toJSON` options.
+    注意，`toJSON()`的返回值默认_不包含_虚拟类型的值。
+    如果你想要填充虚拟属性时，又需要让类似于 Express 的 [`res.json()` 函数](http://expressjs.com/en/4x/api.html#res.json)这样的
+    `JSON.stringify()`函数中含有这个虚拟属性，
+    可以通过在schema的`toJSON`选项中设置 `virtuals: true`。
 
     ```javascript
-    // Set `virtuals: true` so `res.json()` works
+    // 设置 `virtuals: true`，所以 `res.json()` 又起作用了
     var BandSchema = new Schema({
       name: String
     }, { toJSON: { virtuals: true } });
     ```
 
-    If you're using populate projections, make sure `foreignField` is included
-    in the projection.
+    如果你在使用填充投影（populate projections），
+    请确认`foreignField`包含在projection中。
 
     ```javascript
     Band.
       find({}).
       populate({ path: 'members', select: 'name' }).
       exec(function(error, bands) {
-        // Won't work, foreign field `band` is not selected in the projection
+        // 不起作用, 在projection中， `band` 没有被选中
       });
 
     Band.
       find({}).
       populate({ path: 'members', select: 'name band' }).
       exec(function(error, bands) {
-        // Works, foreign field `band` is selected
+        // 起作用, 外来的字段 `band` 是被选中的
       });
     ```
 
-    ### Next Up
+    ### 下一步
 
-    Now that we've covered `populate()`, let's take a look at [discriminators](/docs/discriminators.html).
+    既然你已经掌握了 `populate()`，
+    就让我们接着了解一下 [鉴别器 (discriminators)](/docs/discriminators.html)。

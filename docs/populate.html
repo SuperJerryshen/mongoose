@@ -119,27 +119,33 @@ Story.
 <span class="hljs-comment">// 等同于：</span>
 Story.find().populate({ path: <span class="hljs-string">'fans'</span>, select: <span class="hljs-string">'email'</span> });
 </code></pre>
-<h3 id="query-conditions"><a href="#query-conditions">Query conditions and other options</a></h3>
+<h3 id="query-conditions"><a href="#query-conditions">查询条件和其他设置</a></h3>
 
-<p>What if we wanted to populate our fans array based on their age, select
-just their names, and return at most, any 5 of them?</p>
+<p>如果我们根据年龄填充我们的<code>fans</code>，
+只选择了他们的名字，最多返回五个时，会怎么样呢？</p>
 <pre><code class="lang-javascript">Story.
   find(...).
   populate({
     path: <span class="hljs-string">'fans'</span>,
     match: { age: { $gte: <span class="hljs-number">21</span> }},
-    <span class="hljs-comment">// Explicitly exclude `_id`, see http://bit.ly/2aEfTdB</span>
+    <span class="hljs-comment">// 声明去掉 `_id`, 详见 http://bit.ly/2aEfTdB</span>
     select: <span class="hljs-string">'name -_id'</span>,
     options: { limit: <span class="hljs-number">5</span> }
   }).
   exec();
 </code></pre>
-<h3 id="refs-to-children"><a href="#refs-to-children">Refs to children</a></h3>
+<h3 id="refs-to-children"><a href="#refs-to-children">子 Refs</a></h3>
 
-<p>We may find however, if we use the <code>author</code> object, we are unable to get a
+<p>如果使用 <code>author</code> 对象，我们可能无论如何都需要查找，但是却无法获取<code>stories</code>的列表。
+这是因为 <code>story</code> 对象曾经被推到 <code>author.stories</code>过。
+We may find however, if we use the <code>author</code> object, we are unable to get a
 list of the stories. This is because no <code>story</code> objects were ever &#39;pushed&#39;
 onto <code>author.stories</code>.</p>
-<p>There are two perspectives here. First, you may want the <code>author</code> know
+<p>这里有两个观点。第一，你可能需要 <code>author</code> 知道哪些 <code>stories</code> 是他们自己的。
+通常情况下，通过一个父节点，你的 <code>Schema</code> 应该是一对多关系中的多。
+但是，如果你有必要去获得子节点的数组，你可以像下面这样，
+通过 <code>push()</code> 向你的数组推document。
+There are two perspectives here. First, you may want the <code>author</code> know
 which stories are theirs. Usually, your schema should resolve
 one-to-many relationships by having a parent pointer in the &#39;many&#39; side.
 But, if you have a good reason to want an array of child pointers, you
@@ -147,18 +153,17 @@ can <code>push()</code> documents onto the array as shown below.</p>
 <pre><code class="lang-javascript">author.stories.push(story1);
 author.save(callback);
 </code></pre>
-<p>This allows us to perform a <code>find</code> and <code>populate</code> combo:</p>
+<p>你可以链式运行 <code>find</code> 和 <code>populate</code>：</p>
 <pre><code class="lang-javascript">Person.
   findOne({ name: <span class="hljs-string">'Ian Fleming'</span> }).
-  populate(<span class="hljs-string">'stories'</span>). <span class="hljs-comment">// only works if we pushed refs to children</span>
+  populate(<span class="hljs-string">'stories'</span>). <span class="hljs-comment">// 只有设置了ref才会起作用</span>
   exec(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err, person</span>) </span>{
     <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">return</span> handleError(err);
     <span class="hljs-built_in">console</span>.log(person);
   });
 </code></pre>
-<p>It is debatable that we really want two sets of pointers as they may get
-out of sync. Instead we could skip populating and directly <code>find()</code> the
-stories we are interested in.</p>
+<p>如果设置了两个指针是有问题的，可能会导致其失去同步。
+我们可以跳过填充，直接在运行 <code>find()</code> 找到我们需要的stories。</p>
 <pre><code class="lang-javascript">Story.
   find({ author: author._id }).
   exec(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err, stories</span>) </span>{
@@ -166,82 +171,80 @@ stories we are interested in.</p>
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'The stories are an array: '</span>, stories);
   });
 </code></pre>
-<p>The documents returned from
-<a href="./api.html#query_Query-populate">query population</a> become fully
-functional, <code>remove</code>able, <code>save</code>able documents unless the
-<a href="./api.html#query_Query-lean">lean</a> option is specified. Do not confuse
-them with <a href="./subdocs.html">sub docs</a>. Take caution when calling its
-remove method because you&#39;ll be removing it from the database, not just
-the array.</p>
-<h3 id="populate_an_existing_mongoose_document"><a href="#populate_an_existing_mongoose_document">Populating an existing document</a></h3>
+<p>通过<a href="./api.html#query_Query-populate">query population</a>返回的文档是完全函数化的。
+除非规定了<a href="./api.html#query_Query-lean">lean</a>值，
+都可以通过<code>remove</code>或<code>save</code>删除和保存文档。
+不要把这些和<a href="./subdocs.html">sub docs</a>搞混了。
+当调用<code>remove</code>方法时要当心一点，因为你不仅会把他从数组删除，还会把他从数据库中删除。</p>
+<h3 id="populate_an_existing_mongoose_document"><a href="#populate_an_existing_mongoose_document">填充已生成的文档</a></h3>
 
-<p>If we have an existing mongoose document and want to populate some of its
-paths, <strong>mongoose &gt;= 3.6</strong> supports the
-<a href="./api.html#document_Document-populate">document#populate()</a> method.</p>
-<h3 id="populate_multiple_documents"><a href="#populate_multiple_documents">Populating multiple existing documents</a></h3>
+<p>如果我们想要填充一个已经生成过的mongoose文档，
+在<strong>mongoose &gt;= 3.6</strong>时，支持
+<a href="./api.html#document_Document-populate">document#populate()</a>方法。</p>
+<h3 id="populate_multiple_documents"><a href="#populate_multiple_documents">填充多个已生成的文档</a></h3>
 
-<p>If we have one or many mongoose documents or even plain objects
-(_like <a href="./api.html#model_Model.mapReduce">mapReduce</a> output_), we may
-populate them using the <a href="./api.html#model_Model.populate">Model.populate()</a>
-method available in <strong>mongoose &gt;= 3.6</strong>. This is what <code>document#populate()</code>
-and <code>query#populate()</code> use to populate documents.</p>
-<h3 id="deep-populate"><a href="#deep-populate">Populating across multiple levels</a></h3>
+<p>如果我们有一个或多个文档，或者普通的对象
+(_类似于 <a href="./api.html#model_Model.mapReduce">mapReduce</a> 的输出_)，
+可以通过使用 <a href="./api.html#model_Model.populate">Model.populate()</a>
+（<strong>mongoose &gt;= 3.6 可用</strong>） 填充他们。
+这就是<code>document#populate()</code> 和 <code>query#populate()</code>填充文档的使用场景。</p>
+<h3 id="deep-populate"><a href="#deep-populate">多级填充</a></h3>
 
-<p>Say you have a user schema which keeps track of the user&#39;s friends.</p>
+<p>如果你有一个user的schema，它保存着user朋友的踪迹。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> userSchema = <span class="hljs-keyword">new</span> Schema({
   name: <span class="hljs-built_in">String</span>,
   friends: [{ type: ObjectId, ref: <span class="hljs-string">'User'</span> }]
 });
 </code></pre>
-<p>Populate lets you get a list of a user&#39;s friends, but what if you also
-wanted a user&#39;s friends of friends? Specify the <code>populate</code> option to tell
-mongoose to populate the <code>friends</code> array of all the user&#39;s friends:</p>
+<p>填充让你可以获取user好友的列表，
+但是你还想获取user好友的好友时，该怎么办呢？
+你可以通过配置 <code>populate</code>选项，
+告诉mongoose去填充所有user朋友的 <code>friends</code> 数组：</p>
 <pre><code class="lang-javascript">User.
   findOne({ name: <span class="hljs-string">'Val'</span> }).
   populate({
     path: <span class="hljs-string">'friends'</span>,
-    <span class="hljs-comment">// Get friends of friends - populate the 'friends' array for every friend</span>
+    <span class="hljs-comment">// 获取朋友的朋友的信息 - 对每一个friend填充 'friends' 信息</span>
     populate: { path: <span class="hljs-string">'friends'</span> }
   });
 </code></pre>
-<h3 id="cross-db-populate"><a href="#cross-db-populate">Populating across Databases</a></h3>
+<h3 id="cross-db-populate"><a href="#cross-db-populate">通过数据库填充</a></h3>
 
-<p>Let&#39;s say you have a schema representing events, and a schema representing
-conversations. Each event has a corresponding conversation thread.</p>
+<p>现在有一个表示事件的schmea和一个表示会话的schema。
+每一个事件有一个对应的会话索引。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> eventSchema = <span class="hljs-keyword">new</span> Schema({
   name: <span class="hljs-built_in">String</span>,
-  <span class="hljs-comment">// The id of the corresponding conversation</span>
-  <span class="hljs-comment">// Notice there's no ref here!</span>
+  <span class="hljs-comment">// 对应的会话 id</span>
+  <span class="hljs-comment">// 注意：这里没有ref</span>
   conversation: ObjectId
 });
 <span class="hljs-keyword">var</span> conversationSchema = <span class="hljs-keyword">new</span> Schema({
   numMessages: <span class="hljs-built_in">Number</span>
 });
 </code></pre>
-<p>Also, suppose that events and conversations are stored in separate MongoDB
-instances.</p>
+<p>假设事件和会话存储在分开的MongoDB实例中。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> db1 = mongoose.createConnection(<span class="hljs-string">'localhost:27000/db1'</span>);
 <span class="hljs-keyword">var</span> db2 = mongoose.createConnection(<span class="hljs-string">'localhost:27001/db2'</span>);
 
 <span class="hljs-keyword">var</span> Event = db1.model(<span class="hljs-string">'Event'</span>, eventSchema);
 <span class="hljs-keyword">var</span> Conversation = db2.model(<span class="hljs-string">'Conversation'</span>, conversationSchema);
 </code></pre>
-<p>In this situation, you will <strong>not</strong> be able to <code>populate()</code> normally.
-The <code>conversation</code> field will always be null, because <code>populate()</code> doesn&#39;t
-know which model to use. However,
-<a href="./api.html#model_Model.populate">you can specify the model explicitly</a>.</p>
+<p>在这种情况下，你将<strong>不能</strong>正常使用 <code>populate()</code> 方法。
+<code>conversation</code> 字段总会返回 <code>null</code>，
+因为 <code>populate()</code> 不知道使用哪一个 model。
+但是，<a href="./api.html#model_Model.populate">你可以明确指定 model</a>。</p>
 <pre><code class="lang-javascript">Event.
   find().
   populate({ path: <span class="hljs-string">'conversation'</span>, model: Conversation }).
   exec(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error, docs</span>) </span>{ <span class="hljs-comment">/* ... */</span> });
 </code></pre>
-<p>This is known as a &quot;cross-database populate,&quot; because it enables you to
-populate across MongoDB databases and even across MongoDB instances.</p>
-<h3 id="dynamic-ref"><a href="#dynamic-ref">Dynamic References</a></h3>
+<p>这就是&quot;跨数据库填充&quot;，因为他让你可以通过
+MongoDB数据库填充数据，甚至通过MongoDB实例。</p>
+<h3 id="dynamic-ref"><a href="#dynamic-ref">动态References</a></h3>
 
-<p>Mongoose can also populate from multiple collections at the same time.
-Let&#39;s say you have a user schema that has an array of &quot;connections&quot; - a
-user can be connected to either other users or an organization.</p>
+<p>Mongoose 可以同时从不同的集合填充数据。
+也就是说，拥有 &quot;connections&quot; 数组的user schema，
+是可以连接到其他 user 或 organization。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> userSchema = <span class="hljs-keyword">new</span> Schema({
   name: <span class="hljs-built_in">String</span>,
   connections: [{
@@ -255,13 +258,12 @@ user can be connected to either other users or an organization.</p>
 <span class="hljs-keyword">var</span> User = mongoose.model(<span class="hljs-string">'User'</span>, userSchema);
 <span class="hljs-keyword">var</span> Organization = mongoose.model(<span class="hljs-string">'Organization'</span>, organizationSchema);
 </code></pre>
-<p>The <code>refPath</code> property above means that mongoose will look at the
-<code>connections.kind</code> path to determine which model to use for <code>populate()</code>.
-In other words, the <code>refPath</code> property enables you to make the <code>ref</code>
-property dynamic.</p>
-<pre><code class="lang-javascript"><span class="hljs-comment">// Say we have one organization:</span>
+<p>上例中的<code>refPath</code>属性，意思是mongoose 会向上查找 <code>connections.kind</code> 路径，
+来决定使用哪一个model来进行<code>populate()</code>都会被单独的文档<em>代替</em>。
+也就是说，<code>refPath</code> 可以让 <code>ref</code> 属性成为动态的。</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// 我们有一个 organization:</span>
 <span class="hljs-comment">// `{ _id: ObjectId('000000000000000000000001'), name: "Guns N' Roses", kind: 'Band' }`</span>
-<span class="hljs-comment">// And two users:</span>
+<span class="hljs-comment">// 和两个 users:</span>
 <span class="hljs-comment">// {</span>
 <span class="hljs-comment">//   _id: ObjectId('000000000000000000000002')</span>
 <span class="hljs-comment">//   name: 'Axl Rose',</span>
@@ -283,14 +285,13 @@ User.
     <span class="hljs-comment">// doc.connections[1].item is an Organization doc</span>
   });
 </code></pre>
-<h3 id="populate-virtuals"><a href="#populate-virtuals">Populate Virtuals</a></h3>
+<h3 id="populate-virtuals"><a href="#populate-virtuals">填充虚拟类型 (Populate Virtuals)</a></h3>
 
-<p><em>New in 4.5.0</em></p>
-<p>So far you&#39;ve only populated based on the <code>_id</code> field. However, that&#39;s
-sometimes not the right choice.
-In particular, <a href="https://docs.mongodb.com/manual/tutorial/model-referenced-one-to-many-relationships-between-documents/">arrays that grow without bound are a MongoDB anti-pattern</a>.
-Using mongoose virtuals, you can define more sophisticated relationships
-between documents.</p>
+<p><em>4.5.0 版本新增</em></p>
+<p>目前，你已经可以只通过 <code>_id</code> 填充数据。
+然而，有时候就不是正确的选择了。尤其是当
+<a href="https://docs.mongodb.com/manual/tutorial/model-referenced-one-to-many-relationships-between-documents/">数组是 MongoDB anti-pattern时，其增长是没有限制的</a>时。
+使用mongoose 虚拟类型时，你可以在文档之间定义更加精细的关系。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> PersonSchema = <span class="hljs-keyword">new</span> Schema({
   name: <span class="hljs-built_in">String</span>,
   band: <span class="hljs-built_in">String</span>
@@ -300,11 +301,12 @@ between documents.</p>
   name: <span class="hljs-built_in">String</span>
 });
 BandSchema.virtual(<span class="hljs-string">'members'</span>, {
-  ref: <span class="hljs-string">'Person'</span>, <span class="hljs-comment">// The model to use</span>
-  localField: <span class="hljs-string">'name'</span>, <span class="hljs-comment">// Find people where `localField`</span>
-  foreignField: <span class="hljs-string">'band'</span>, <span class="hljs-comment">// is equal to `foreignField`</span>
-  <span class="hljs-comment">// If `justOne` is true, 'members' will be a single doc as opposed to</span>
-  <span class="hljs-comment">// an array. `justOne` is false by default.</span>
+  ref: <span class="hljs-string">'Person'</span>, <span class="hljs-comment">// 使用的 model</span>
+  localField: <span class="hljs-string">'name'</span>, <span class="hljs-comment">// 从 `localField` 中查找</span>
+  foreignField: <span class="hljs-string">'band'</span>, <span class="hljs-comment">// 等同于 `foreignField`</span>
+  <span class="hljs-comment">// 如果 `justOne` 的值为 true, 'members' 将会是单个文档</span>
+  <span class="hljs-comment">// false时，则为一个数组</span>
+  <span class="hljs-comment">// `justOne` 默认值为 false</span>
   justOne: <span class="hljs-literal">false</span>
 });
 
@@ -312,42 +314,42 @@ BandSchema.virtual(<span class="hljs-string">'members'</span>, {
 <span class="hljs-keyword">var</span> Band = mongoose.model(<span class="hljs-string">'Band'</span>, BandSchema);
 
 <span class="hljs-comment">/**
- * Suppose you have 2 bands: "Guns N' Roses" and "Motley Crue"
- * And 4 people: "Axl Rose" and "Slash" with "Guns N' Roses", and
- * "Vince Neil" and "Nikki Sixx" with "Motley Crue"
+ * 假设你有两个 bands："Guns N' Roses" 和 "Motley Crue"
+ * 和四个 people: "Axl Rose" 、 带有"Guns N' Roses" 的 "Slash"
+ * "Vince Neil" 和 带有"Motley Crue" 的 "Nikki Sixx"
  */</span>
 Band.find({}).populate(<span class="hljs-string">'members'</span>).exec(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error, bands</span>) </span>{
-  <span class="hljs-comment">/* `bands.members` is now an array of instances of `Person` */</span>
+  <span class="hljs-comment">/* `bands.members`为 `Person` 实例的一个数组 */</span>
 });
 </code></pre>
-<p>Keep in mind that virtuals are <em>not</em> included in <code>toJSON()</code> output by</p>
-<p>default. If you want populate virtuals to show up when using functions
-that rely on <code>JSON.stringify()</code>, like Express&#39;
-<a href="http://expressjs.com/en/4x/api.html#res.json"><code>res.json()</code> function</a>,
-set the <code>virtuals: true</code> option on your schema&#39;s <code>toJSON</code> options.</p>
-<pre><code class="lang-javascript"><span class="hljs-comment">// Set `virtuals: true` so `res.json()` works</span>
+<p>注意，<code>toJSON()</code>的返回值默认<em>不包含</em>虚拟类型的值。
+如果你想要填充虚拟属性时，又需要让类似于 Express 的 <a href="http://expressjs.com/en/4x/api.html#res.json"><code>res.json()</code> 函数</a>这样的
+<code>JSON.stringify()</code>函数中含有这个虚拟属性，
+可以通过在schema的<code>toJSON</code>选项中设置 <code>virtuals: true</code>。</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// 设置 `virtuals: true`，所以 `res.json()` 又起作用了</span>
 <span class="hljs-keyword">var</span> BandSchema = <span class="hljs-keyword">new</span> Schema({
   name: <span class="hljs-built_in">String</span>
 }, { toJSON: { virtuals: <span class="hljs-literal">true</span> } });
 </code></pre>
-<p>If you&#39;re using populate projections, make sure <code>foreignField</code> is included
-in the projection.</p>
+<p>如果你在使用填充投影（populate projections），
+请确认<code>foreignField</code>包含在projection中。</p>
 <pre><code class="lang-javascript">Band.
   find({}).
   populate({ path: <span class="hljs-string">'members'</span>, select: <span class="hljs-string">'name'</span> }).
   exec(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error, bands</span>) </span>{
-    <span class="hljs-comment">// Won't work, foreign field `band` is not selected in the projection</span>
+    <span class="hljs-comment">// 不起作用, 在projection中， `band` 没有被选中</span>
   });
 
 Band.
   find({}).
   populate({ path: <span class="hljs-string">'members'</span>, select: <span class="hljs-string">'name band'</span> }).
   exec(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error, bands</span>) </span>{
-    <span class="hljs-comment">// Works, foreign field `band` is selected</span>
+    <span class="hljs-comment">// 起作用, 外来的字段 `band` 是被选中的</span>
   });
 </code></pre>
-<h3 id="next-up">Next Up</h3>
-<p>Now that we&#39;ve covered <code>populate()</code>, let&#39;s take a look at <a href="/docs/discriminators.html">discriminators</a>.</p>
+<h3 id="-">下一步</h3>
+<p>既然你已经掌握了 <code>populate()</code>，
+就让我们接着了解一下 <a href="/docs/discriminators.html">鉴别器 (discriminators)</a>。</p>
 </div></div><script type="text/javascript">!function(name,path,ctx){
   var latest,prev=name!=='Keen'&&window.Keen?window.Keen:false;ctx[name]=ctx[name]||{ready:function(fn){var h=document.getElementsByTagName('head')[0],s=document.createElement('script'),w=window,loaded;s.onload=s.onerror=s.onreadystatechange=function(){if((s.readyState&&!(/^c|loade/.test(s.readyState)))||loaded){return}s.onload=s.onreadystatechange=null;loaded=1;latest=w.Keen;if(prev){w.Keen=prev}else{try{delete w.Keen}catch(e){w.Keen=void 0}}ctx[name]=latest;ctx[name].ready(fn)};s.async=1;s.src=path;h.parentNode.insertBefore(s,h)}}
 }('KeenAsync','https://d26b395fwzu5fz.cloudfront.net/keen-tracking-1.1.3.min.js',this);
