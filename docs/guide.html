@@ -95,7 +95,7 @@ Documents拥有许多它们自己的<a href="./api.html#document-js">内建实�
 <h3 id="query-helpers"><a href="#query-helpers">辅助查询函数</a></h3>
 
 <p>你也可以添加辅助查询的函数，它就像实例方法一样，
-但是只是对于mongoose的查询。辅助查询函数让你可以扩展mongoose的
+但是只是用于mongoose的查询。辅助查询函数让你可以扩展mongoose的
 <a href="./queries.html">链式查询生成器API</a>。</p>
 <pre><code class="lang-javascript">  animalSchema.query.byName = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>) </span>{
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.find({ name: <span class="hljs-keyword">new</span> <span class="hljs-built_in">RegExp</span>(name, <span class="hljs-string">'i'</span>) });
@@ -147,10 +147,10 @@ Documents拥有许多它们自己的<a href="./api.html#document-js">内建实�
 <p>您也可以查看<a href="./api.html#model_Model.ensureIndexes">Model#ensureIndexes</a>方法。</p>
 <h3 id="virtuals"><a href="#virtuals">虚拟类型(Virtuals)</a></h3>
 
-<p><a href="./api.html#schema_Schema-virtual">Virtuals</a> are document properties that
-you can get and set but that do not get persisted to MongoDB. The getters
-are useful for formatting or combining fields, while setters are useful for
-de-composing a single value into multiple values for storage.</p>
+<p><a href="./api.html#schema_Schema-virtual">虚拟类型（Virtuals）</a> 
+是你可以获取和设置的文档，但是却不会向MongoDB存储。
+<code>getters</code> 对于格式化和组合字段非常有用，
+<code>setters</code> 对于分解一个值为多个值并存储时，很有用。</p>
 <pre><code class="lang-javascript">  <span class="hljs-comment">// define a schema</span>
   <span class="hljs-keyword">var</span> personSchema = <span class="hljs-keyword">new</span> Schema({
     name: {
@@ -167,28 +167,28 @@ de-composing a single value into multiple values for storage.</p>
     name: { first: <span class="hljs-string">'Axl'</span>, last: <span class="hljs-string">'Rose'</span> }
   });
 </code></pre>
-<p>Suppose you want to print out the person&#39;s full name. You could do it yourself:</p>
+<p>如果你想要打印<code>person</code>的全名，你也可以自己拼接：</p>
 <pre><code class="lang-javascript"><span class="hljs-built_in">console</span>.log(axl.name.first + <span class="hljs-string">' '</span> + axl.name.last); <span class="hljs-comment">// Axl Rose</span>
 </code></pre>
-<p>But concatenating the first and last name every time can get cumbersome.
-And what if you want to do some extra processing on the name, like
-<a href="https://www.npmjs.com/package/diacritics">removing diacritics?</a>. A
-<a href="./api.html#virtualtype_VirtualType-get">virtual property getter</a> lets you</p>
-<p>define a <code>fullName</code> property that won&#39;t get persisted to MongoDB.</p>
+<p>但是每次使用时如果都要拼接字段，会非常不灵活。
+而且如果你想在名字上做一些额外的处理，
+比如<a href="https://www.npmjs.com/package/diacritics">移除 diacritics</a>时，将会如何？
+<a href="./api.html#virtualtype_VirtualType-get">虚拟属性 getter</a>让你可以
+定义一个 <code>fullName</code> 属性，而不会存在于MongoDB中。</p>
 <pre><code class="lang-javascript">personSchema.virtual(<span class="hljs-string">'fullName'</span>).get(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.name.first + <span class="hljs-string">' '</span> + <span class="hljs-keyword">this</span>.name.last;
 });
 </code></pre>
-<p>Now, mongoose will call your getter function every time you access the
-<code>fullName</code> property:</p>
+<p>当你每次获取 <code>fullName</code>属性时，mongoose 将会调用你定义的 <code>getter</code> 函数：</p>
 <pre><code class="lang-javascript"><span class="hljs-built_in">console</span>.log(axl.fullName); <span class="hljs-comment">// Axl Rose</span>
 </code></pre>
-<p>If you use <code>toJSON()</code> or <code>toObject()</code> (or use <code>JSON.stringify()</code> on a
-mongoose document) mongoose will <em>not</em> include virtuals by default.
-Pass <code>{ virtuals: true }</code> to either
-<a href="./api.html#document_Document-toObject">toObject()</a> or <code>toJSON()</code>.</p>
-<p>You can also add a custom setter to your virtual that will let you set both
-first name and last name via the <code>fullName</code> virtual.</p>
+<p>如果你使用 <code>toJSON()</code> 或 <code>toObject()</code> （或者在mongoose文档上使用 <code>JSON.stringify()</code>），
+mongoose 默认<em>不会</em>包含虚拟属性。
+如果想获取虚拟属性，需要向
+<a href="./api.html#document_Document-toObject">toObject()</a> 或 <code>toJSON()</code>中，
+传入 <code>{ virtuals: true }</code> 的配置。</p>
+<p>你也可以向虚拟属性中，添加自定义的 <code>setter</code>。
+通过虚拟属性 <code>fullName</code>，你可以同时设置 <code>first name</code> 和 <code>last name</code> 的值。</p>
 <pre><code class="lang-javascript">personSchema.virtual(<span class="hljs-string">'fullName'</span>).
   get(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.name.first + <span class="hljs-string">' '</span> + <span class="hljs-keyword">this</span>.name.last; }).
   set(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">v</span>) </span>{
@@ -196,28 +196,28 @@ first name and last name via the <code>fullName</code> virtual.</p>
     <span class="hljs-keyword">this</span>.name.last = v.substr(v.indexOf(<span class="hljs-string">' '</span>) + <span class="hljs-number">1</span>);
   });
 
-axl.fullName = <span class="hljs-string">'William Rose'</span>; <span class="hljs-comment">// Now `axl.name.first` is "William"</span>
+axl.fullName = <span class="hljs-string">'William Rose'</span>; <span class="hljs-comment">// 此时， `axl.name.first` 的值为 "William"</span>
 </code></pre>
-<p>Virtual property setters are applied before other validation. So the example
-above would still work even if the <code>first</code> and <code>last</code> name fields were
-required.</p>
-<p>Only non-virtual properties work as part of queries and for field selection.
-Since virtuals are not stored in MongoDB, you can&#39;t query with them.</p>
-<h5 id="aliases"><a href="#aliases">Aliases</a></h5>
+<p>在其他验证之前，虚拟属性的setter非常实用。
+所以尽管上例中 <code>first</code> 和 <code>last</code> 字段都是必须的，但仍然可以运行。</p>
+<p>虚拟属性不能做为queries和字段选择使用。
+因为虚拟属性没有存在于MongoDB种，你不能用他们来进行查询。</p>
+<h5 id="aliases"><a href="#aliases">别名（Aliases）</a></h5>
 
-<p>Aliases are a particular type of virtual where the getter and setter
-seamlessly get and set another property. This is handy for saving network
-bandwidth, so you can convert a short property name stored in the database
-into a longer name for code readability.</p>
+<p>别名是一个很特别的虚拟属性类型，
+它的setter和getter将无缝地获取其他属性的get和set。
+这样对于节省带宽是非常方便的，所以为了提高代码可读性，
+你可以将数据库中的属性转换为一个简短的属性名。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> personSchema = <span class="hljs-keyword">new</span> Schema({
   n: {
     type: <span class="hljs-built_in">String</span>,
-    <span class="hljs-comment">// Now accessing `name` will get you the value of `n`, and setting `n` will set the value of `name`</span>
+    <span class="hljs-comment">// 访问`name`将返回`n`的值, </span>
+    <span class="hljs-comment">// 设置 `n` 值同样也会设置 `name` 的值</span>
     alias: <span class="hljs-string">'name'</span>
   }
 });
 
-<span class="hljs-comment">// Setting `name` will propagate to `n`</span>
+<span class="hljs-comment">// 设置 `name` 的值将会广播给 `n`</span>
 <span class="hljs-keyword">var</span> person = <span class="hljs-keyword">new</span> Person({ name: <span class="hljs-string">'Val'</span> });
 <span class="hljs-built_in">console</span>.log(person); <span class="hljs-comment">// { n: 'Val' }</span>
 <span class="hljs-built_in">console</span>.log(person.toObject({ virtuals: <span class="hljs-literal">true</span> })); <span class="hljs-comment">// { n: 'Val', name: 'Val' }</span>
@@ -226,10 +226,10 @@ into a longer name for code readability.</p>
 person.name = <span class="hljs-string">'Not Val'</span>;
 <span class="hljs-built_in">console</span>.log(person); <span class="hljs-comment">// { n: 'Not Val' }</span>
 </code></pre>
-<h3 id="options"><a href="#options">Options</a></h3>
+<h3 id="options"><a href="#options">配置（Options）</a></h3>
 
-<p>Schemas have a few configurable options which can be passed to the
-constructor or <code>set</code> directly:</p>
+<p><code>Schemas</code> 有少量可配置的属性，
+可以通过传递给构造函数，或者直接 <code>set</code> 来进行配置：</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">new</span> Schema({..}, options);
 
 <span class="hljs-comment">// or</span>
@@ -237,7 +237,7 @@ constructor or <code>set</code> directly:</p>
 <span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({..});
 schema.set(option, value);
 </code></pre>
-<p>Valid options:</p>
+<p>有效的配置选项:</p>
 <ul>
 <li><a href="#autoIndex">autoIndex</a></li>
 <li><a href="#bufferCommands">bufferCommands</a></li>
@@ -259,159 +259,160 @@ schema.set(option, value);
 <li><a href="#skipVersioning">skipVersioning</a></li>
 <li><a href="#timestamps">timestamps</a></li>
 </ul>
-<h3 id="autoIndex"><a href="#autoIndex">option: autoIndex</a></h3>
+<h3 id="autoIndex"><a href="#autoIndex">选项: autoIndex</a></h3>
 
-<p>At application startup, Mongoose sends a <a href="https://docs.mongodb.com/manual/reference/method/db.collection.createIndex/#db.collection.createIndex"><code>createIndex</code> command</a> for each index declared in your <code>Schema</code>. As of Mongoose v3, indexes are created in the <code>background</code> by default. If you wish to disable the auto-creation feature and manually handle when indexes are created, set your <code>Schema</code>s <code>autoIndex</code> option to <code>false</code> and use the <a href="./api.html#model_Model.ensureIndexes">ensureIndexes</a> method on your model.</p>
+<p>在应用开始运行时，Mongoose会向你的<code>Schmea</code>中的每一个索引发送一个<a href="https://docs.mongodb.com/manual/reference/method/db.collection.createIndex/#db.collection.createIndex"><code>createIndex</code> 命令</a>
+从Mongoose v3开始，索引是默认自动生成的。
+如果你想禁用自动生成索引的功能，需要在索引生成的时候手动操作，
+也就是把你的 <code>Schema</code> 的 <code>autoIndex</code> 选项设置为 <code>false</code>，
+并在你的model上使用<a href="./api.html#model_Model.ensureIndexes">ensureIndexes</a>方法。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({..}, { autoIndex: <span class="hljs-literal">false</span> });
 <span class="hljs-keyword">var</span> Clock = mongoose.model(<span class="hljs-string">'Clock'</span>, schema);
 Clock.ensureIndexes(callback);
 </code></pre>
-<h3 id="bufferCommands"><a href="#bufferCommands">option: bufferCommands</a></h3>
+<h3 id="bufferCommands"><a href="#bufferCommands">选项: bufferCommands</a></h3>
 
-<p>By default, mongoose buffers commands when the connection goes down until
-the driver manages to reconnect. To disable buffering, set <code>bufferCommands</code>
-to false.</p>
+<p>默认情况下，从连接中断开始，直到重新连接，mongoose会缓存指令。
+设置<code>bufferCommands</code> 为 <code>false</code> 可以禁用缓存。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({..}, { bufferCommands: <span class="hljs-literal">false</span> });
 </code></pre>
 <p>The schema <code>bufferCommands</code> option overrides the global <code>bufferCommands</code> option.</p>
 <pre><code class="lang-javascript">mongoose.set(<span class="hljs-string">'bufferCommands'</span>, <span class="hljs-literal">true</span>);
-<span class="hljs-comment">// Schema option below overrides the above, if the schema option is set.</span>
+<span class="hljs-comment">// 如果schema的选项是通过set设置的，下面的选项将会覆盖上面的</span>
 <span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({..}, { bufferCommands: <span class="hljs-literal">false</span> });
 </code></pre>
-<h3 id="capped"><a href="#capped">option: capped</a></h3>
+<h3 id="capped"><a href="#capped">选项: capped</a></h3>
 
-<p>Mongoose supports MongoDBs <a href="http://www.mongodb.org/display/DOCS/Capped+Collections">capped</a>
-collections. To specify the underlying MongoDB collection be <code>capped</code>, set
-the <code>capped</code> option to the maximum size of the collection in
-<a href="http://www.mongodb.org/display/DOCS/Capped+Collections#CappedCollections-size.">bytes</a>.</p>
+<p>Mongoose支持MongoDB的<a href="http://www.mongodb.org/display/DOCS/Capped+Collections">固定(capped)</a>集合。
+确认设置基础的MongoDB集合为 <code>capped</code>，
+<code>capped</code> 选项可以在<a href="http://www.mongodb.org/display/DOCS/Capped+Collections#CappedCollections-size.">bytes</a>上
+限制集合的最大占用空间。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">new</span> Schema({..}, { capped: <span class="hljs-number">1024</span> });
 </code></pre>
-<p>The <code>capped</code> option may also be set to an object if you want to pass
-additional options like <a href="http://www.mongodb.org/display/DOCS/Capped+Collections#CappedCollections-max">max</a>
-or <a href="http://www.mongodb.org/display/DOCS/Capped+Collections#CappedCollections-autoIndexId">autoIndexId</a>.
-In this case you must explicitly pass the <code>size</code> option, which is required.</p>
+<p>如果你想传入一些类似于
+<a href="http://www.mongodb.org/display/DOCS/Capped+Collections#CappedCollections-max">max</a>
+或 <a href="http://www.mongodb.org/display/DOCS/Capped+Collections#CappedCollections-autoIndexId">autoIndexId</a>
+这样的选项时，<code>capped</code> 也可以设置为一个对象。
+这种情况下，<code>size</code> 选项是必填项。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">new</span> Schema({..}, { capped: { size: <span class="hljs-number">1024</span>, max: <span class="hljs-number">1000</span>, autoIndexId: <span class="hljs-literal">true</span> } });
 </code></pre>
-<h3 id="collection"><a href="#collection">option: collection</a></h3>
+<h3 id="collection"><a href="#collection">选项: collection</a></h3>
 
-<p>Mongoose by default produces a collection name by passing the model name to
-the <a href="./api.html#utils_exports.toCollectionName">utils.toCollectionName</a> method.
-This method pluralizes the name. Set this option if you need a different name
-for your collection.</p>
+<p>默认情况下，Mongoose可以通过<a href="./api.html#utils_exports.toCollectionName">utils.toCollectionName</a>方法，
+传入model的名字，来获取一个集合的名字。
+这个方法会把名字变为复数。
+对于你的集合，如果你想要一个不同的名字，可以设置此选项。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> dataSchema = <span class="hljs-keyword">new</span> Schema({..}, { collection: <span class="hljs-string">'data'</span> });
 </code></pre>
-<h3 id="id"><a href="#id">option: id</a></h3>
+<h3 id="id"><a href="#id">选项: id</a></h3>
 
-<p>Mongoose assigns each of your schemas an <code>id</code> virtual getter by default
-which returns the documents <code>_id</code> field cast to a string, or in the case of
-ObjectIds, its hexString. If you don&#39;t want an <code>id</code> getter added to your
-schema, you may disable it passing this option at schema construction time.</p>
-<pre><code class="lang-javascript"><span class="hljs-comment">// default behavior</span>
+<p>Mongoose默认会给你的每一个schema分配一个 <code>id</code> 虚拟属性，
+其值为转化为string后的文档 <code>_id</code> 字段，也就是ObjectsId的十六进制字符串。
+如果你不想在schema中添加 <code>id</code> 的getter，
+你可以通过在schema构建的时候，传入参数禁用。</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// 默认行为</span>
 <span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({ name: <span class="hljs-built_in">String</span> });
 <span class="hljs-keyword">var</span> Page = mongoose.model(<span class="hljs-string">'Page'</span>, schema);
 <span class="hljs-keyword">var</span> p = <span class="hljs-keyword">new</span> Page({ name: <span class="hljs-string">'mongodb.org'</span> });
 <span class="hljs-built_in">console</span>.log(p.id); <span class="hljs-comment">// '50341373e894ad16347efe01'</span>
 
-<span class="hljs-comment">// disabled id</span>
+<span class="hljs-comment">// 禁用 id</span>
 <span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({ name: <span class="hljs-built_in">String</span> }, { id: <span class="hljs-literal">false</span> });
 <span class="hljs-keyword">var</span> Page = mongoose.model(<span class="hljs-string">'Page'</span>, schema);
 <span class="hljs-keyword">var</span> p = <span class="hljs-keyword">new</span> Page({ name: <span class="hljs-string">'mongodb.org'</span> });
 <span class="hljs-built_in">console</span>.log(p.id); <span class="hljs-comment">// undefined</span>
 </code></pre>
-<h3 id="_id"><a href="#_id">option: _id</a></h3>
+<h3 id="_id"><a href="#_id">选项: _id</a></h3>
 
-<p>Mongoose assigns each of your schemas an <code>_id</code> field by default if one
-is not passed into the <a href="/docs/api.html#schema-js">Schema</a> constructor.
-The type assigned is an <a href="/docs/api.html#schema_Schema.Types">ObjectId</a>
-to coincide with MongoDB&#39;s default behavior. If you don&#39;t want an <code>_id</code>
-added to your schema at all, you may disable it using this option.</p>
-<p>You can <strong>only</strong> use this option on sub-documents. Mongoose can&#39;t
-save a document without knowing its id, so you will get an error if
-you try to save a document without an <code>_id</code>.</p>
-<pre><code class="lang-javascript"><span class="hljs-comment">// default behavior</span>
+<p>如果one没有传入<a href="/docs/api.html#schema-js">Schema</a>构造函数，
+Mongoose默认会给你的每一个schema分配一个 <code>_id</code> 字段。
+为了和MongoDB的默认行为保持一致，
+_id的类型会指定为<a href="/docs/api.html#schema_Schema.Types">ObjectId</a>。</p>
+<p>你<strong>只能</strong>在子文档中使用这些选项。
+Mongoose不能在没有id时，保存一个文档，
+所以当你没有_id时保存文档，将会触发错误事件。</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// 默认行为</span>
 <span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({ name: <span class="hljs-built_in">String</span> });
 <span class="hljs-keyword">var</span> Page = mongoose.model(<span class="hljs-string">'Page'</span>, schema);
 <span class="hljs-keyword">var</span> p = <span class="hljs-keyword">new</span> Page({ name: <span class="hljs-string">'mongodb.org'</span> });
 <span class="hljs-built_in">console</span>.log(p); <span class="hljs-comment">// { _id: '50341373e894ad16347efe01', name: 'mongodb.org' }</span>
 
-<span class="hljs-comment">// disabled _id</span>
+<span class="hljs-comment">// 禁用 _id</span>
 <span class="hljs-keyword">var</span> childSchema = <span class="hljs-keyword">new</span> Schema({ name: <span class="hljs-built_in">String</span> }, { _id: <span class="hljs-literal">false</span> });
 <span class="hljs-keyword">var</span> parentSchema = <span class="hljs-keyword">new</span> Schema({ children: [childSchema] });
 
 <span class="hljs-keyword">var</span> Model = mongoose.model(<span class="hljs-string">'Model'</span>, parentSchema);
 
 Model.create({ children: [{ name: <span class="hljs-string">'Luke'</span> }] }, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error, doc</span>) </span>{
-  <span class="hljs-comment">// doc.children[0]._id will be undefined</span>
+  <span class="hljs-comment">// doc.children[0]._id 的值将为 undefined</span>
 });
 </code></pre>
-<h3 id="minimize"><a href="#minimize">option: minimize</a></h3>
+<h3 id="minimize"><a href="#minimize">选项: minimize</a></h3>
 
-<p>Mongoose will, by default, &quot;minimize&quot; schemas by removing empty objects.</p>
+<p>默认情况下，Mongoose将会通过删除空对象来 “最小化” schemas。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({ name: <span class="hljs-built_in">String</span>, inventory: {} });
 <span class="hljs-keyword">var</span> Character = mongoose.model(<span class="hljs-string">'Character'</span>, schema);
 
-<span class="hljs-comment">// will store `inventory` field if it is not empty</span>
+<span class="hljs-comment">// `inventory`如果不是空对象，将进行存储</span>
 <span class="hljs-keyword">var</span> frodo = <span class="hljs-keyword">new</span> Character({ name: <span class="hljs-string">'Frodo'</span>, inventory: { ringOfPower: <span class="hljs-number">1</span> }});
 Character.findOne({ name: <span class="hljs-string">'Frodo'</span> }, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, character</span>) </span>{
   <span class="hljs-built_in">console</span>.log(character); <span class="hljs-comment">// { name: 'Frodo', inventory: { ringOfPower: 1 }}</span>
 });
 
-<span class="hljs-comment">// will not store `inventory` field if it is empty</span>
+<span class="hljs-comment">// `inventory`为空对象，将不会存储</span>
 <span class="hljs-keyword">var</span> sam = <span class="hljs-keyword">new</span> Character({ name: <span class="hljs-string">'Sam'</span>, inventory: {}});
 Character.findOne({ name: <span class="hljs-string">'Sam'</span> }, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, character</span>) </span>{
   <span class="hljs-built_in">console</span>.log(character); <span class="hljs-comment">// { name: 'Sam' }</span>
 });
 </code></pre>
-<p>This behavior can be overridden by setting <code>minimize</code> option to <code>false</code>. It
-will then store empty objects.</p>
+<p>这个行为可以通过设置 <code>minimize</code> 为 <code>false</code> 来覆盖。
+设置后，将会保存空对象。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({ name: <span class="hljs-built_in">String</span>, inventory: {} }, { minimize: <span class="hljs-literal">false</span> });
 <span class="hljs-keyword">var</span> Character = mongoose.model(<span class="hljs-string">'Character'</span>, schema);
 
-<span class="hljs-comment">// will store `inventory` if empty</span>
+<span class="hljs-comment">// `inventory`为空时也会保存</span>
 <span class="hljs-keyword">var</span> sam = <span class="hljs-keyword">new</span> Character({ name: <span class="hljs-string">'Sam'</span>, inventory: {}});
 Character.findOne({ name: <span class="hljs-string">'Sam'</span> }, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, character</span>) </span>{
   <span class="hljs-built_in">console</span>.log(character); <span class="hljs-comment">// { name: 'Sam', inventory: {}}</span>
 });
 </code></pre>
-<h3 id="read"><a href="#read">option: read</a></h3>
+<h3 id="read"><a href="#read">选项: read</a></h3>
 
-<p>Allows setting <a href="/docs/api.html#query_Query-read">query#read</a> options at the
-schema level, providing us a way to apply default
-<a href="http://docs.mongodb.org/manual/applications/replication/#replica-set-read-preference">ReadPreferences</a>
-to all queries derived from a model.</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({..}, { read: <span class="hljs-string">'primary'</span> });            <span class="hljs-comment">// also aliased as 'p'</span>
-<span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({..}, { read: <span class="hljs-string">'primaryPreferred'</span> });   <span class="hljs-comment">// aliased as 'pp'</span>
-<span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({..}, { read: <span class="hljs-string">'secondary'</span> });          <span class="hljs-comment">// aliased as 's'</span>
-<span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({..}, { read: <span class="hljs-string">'secondaryPreferred'</span> }); <span class="hljs-comment">// aliased as 'sp'</span>
-<span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({..}, { read: <span class="hljs-string">'nearest'</span> });            <span class="hljs-comment">// aliased as 'n'</span>
+<p>允许在schema级设置<a href="/docs/api.html#query_Query-read">query#read</a>的值，
+对所有从model衍生来的query提供了一种应用默认
+<a href="http://docs.mongodb.org/manual/applications/replication/#replica-set-read-preference">ReadPreferences</a>的方式。</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({..}, { read: <span class="hljs-string">'primary'</span> });            <span class="hljs-comment">// 别名 'p'</span>
+<span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({..}, { read: <span class="hljs-string">'primaryPreferred'</span> });   <span class="hljs-comment">// 别名 'pp'</span>
+<span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({..}, { read: <span class="hljs-string">'secondary'</span> });          <span class="hljs-comment">// 别名 's'</span>
+<span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({..}, { read: <span class="hljs-string">'secondaryPreferred'</span> }); <span class="hljs-comment">// 别名 'sp'</span>
+<span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({..}, { read: <span class="hljs-string">'nearest'</span> });            <span class="hljs-comment">// 别名 'n'</span>
 </code></pre>
-<p>The alias of each pref is also permitted so instead of having to type out
-&#39;secondaryPreferred&#39; and getting the spelling wrong, we can simply pass &#39;sp&#39;.</p>
-<p>The read option also allows us to specify <em>tag sets</em>. These tell the
-<a href="https://github.com/mongodb/node-mongodb-native/">driver</a> from which members
-of the replica-set it should attempt to read. Read more about tag sets
-<a href="http://docs.mongodb.org/manual/applications/replication/#tag-sets">here</a> and
-<a href="http://mongodb.github.com/node-mongodb-native/driver-articles/anintroductionto1_1and2_2.html#read-preferences">here</a>.</p>
-<p><em>NOTE: you may also specify the driver read pref <a href="http://mongodb.github.com/node-mongodb-native/api-generated/replset.html?highlight=strategy">strategy</a>
-option when connecting:</em></p>
-<pre><code class="lang-javascript"><span class="hljs-comment">// pings the replset members periodically to track network latency</span>
+<p>每一个由单词首字母组成的别名是可以使用的，从而避免拼错单词。</p>
+<p><code>read</code> 选项允许我们指定 <em>tag sets</em>。这样可以告诉
+<a href="https://github.com/mongodb/node-mongodb-native/">驱动（driver）</a>
+从副本集的哪一个成员读取。
+在<a href="http://docs.mongodb.org/manual/applications/replication/#tag-sets">这里</a>
+和<a href="http://mongodb.github.com/node-mongodb-native/driver-articles/anintroductionto1_1and2_2.html#read-preferences">这里</a>
+可以阅读更多关于标签集合（tag sets）的内容。</p>
+<p><em>注意：在连接的时候，你也可以指定驱动优先读取
+<a href="http://mongodb.github.com/node-mongodb-native/api-generated/replset.html?highlight=strategy">strategy</a>选项：</em></p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// 周期性地ping副本集，来测量网络延时</span>
 <span class="hljs-keyword">var</span> options = { replset: { strategy: <span class="hljs-string">'ping'</span> }};
 mongoose.connect(uri, options);
 
 <span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({..}, { read: [<span class="hljs-string">'nearest'</span>, { disk: <span class="hljs-string">'ssd'</span> }] });
 mongoose.model(<span class="hljs-string">'JellyBean'</span>, schema);
 </code></pre>
-<h3 id="shardKey"><a href="#shardKey">option: shardKey</a></h3>
+<h3 id="shardKey"><a href="#shardKey">选项: shardKey</a></h3>
 
-<p>The <code>shardKey</code> option is used when we have a <a href="http://www.mongodb.org/display/DOCS/Sharding+Introduction">sharded MongoDB architecture</a>.
-Each sharded collection is given a shard key which must be present in all
-insert/update operations. We just need to set this schema option to the same
-shard key and we’ll be all set.</p>
+<p><code>sharded</code>选项用于当我们有一个<a href="http://www.mongodb.org/display/DOCS/Sharding+Introduction">碎片化的 MongoDB 结构</a>时。
+在所有的插入/更新操作时，每一个碎片化的集合会给出一个 <code>shard key</code>。
+我们只需要把schema的shard设置为同一值既可。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">new</span> Schema({ .. }, { shardKey: { tag: <span class="hljs-number">1</span>, name: <span class="hljs-number">1</span> }})
 </code></pre>
-<p><em>Note that Mongoose does not send the <code>shardcollection</code> command for you. You
-must configure your shards yourself.</em></p>
-<h3 id="strict">option: strict</h3>
+<p><em>注意 Mongoose 不会发送 <code>shardcollection</code> 指令给你。
+你必须自己配置你的shard。</em></p>
+<h3 id="strict">选项: strict</h3>
 
 <p>The strict option, (enabled by default), ensures that values passed to our
 model constructor that were not specified in our schema do not get saved to
@@ -448,7 +449,7 @@ to be produced instead of dropping the bad data.</p>
 thing.iAmNotInTheSchema = <span class="hljs-literal">true</span>;
 thing.save(); <span class="hljs-comment">// iAmNotInTheSchema is never saved to the db</span>
 </code></pre>
-<h3 id="strictQuery">option: strictQuery</h3>
+<h3 id="strictQuery">选项: strictQuery</h3>
 
 <p>For backwards compatibility, the <code>strict</code> option does <strong>not</strong> apply to
 the <code>filter</code> parameter for queries.</p>
@@ -474,7 +475,7 @@ the <code>filter</code> parameter to queries.</p>
 <span class="hljs-comment">// Mongoose will strip out `notInSchema: 1` because `strictQuery` is `true`</span>
 MyModel.find({ notInSchema: <span class="hljs-number">1</span> });
 </code></pre>
-<h3 id="toJSON"><a href="#toJSON">option: toJSON</a></h3>
+<h3 id="toJSON"><a href="#toJSON">选项: toJSON</a></h3>
 
 <p>Exactly the same as the <a href="#toObject">toObject</a> option but only applies when
 the documents <code>toJSON</code> method is called.</p>
@@ -491,7 +492,7 @@ schema.set(<span class="hljs-string">'toJSON'</span>, { getters: <span class="hl
 <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(m)); <span class="hljs-comment">// { "_id": "504e0cd7dd992d9be2f20b6f", "name": "Max Headroom is my name" }</span>
 </code></pre>
 <p>To see all available <code>toJSON/toObject</code> options, read <a href="/docs/api.html#document_Document-toObject">this</a>.</p>
-<h3 id="toObject"><a href="#toObject">option: toObject</a></h3>
+<h3 id="toObject"><a href="#toObject">选项: toObject</a></h3>
 
 <p>Documents have a <a href="/docs/api.html#document_Document-toObject">toObject</a> method
 which converts the mongoose document into a plain javascript object. This
@@ -510,7 +511,7 @@ schema.set(<span class="hljs-string">'toObject'</span>, { getters: <span class="
 <span class="hljs-built_in">console</span>.log(m); <span class="hljs-comment">// { _id: 504e0cd7dd992d9be2f20b6f, name: 'Max Headroom is my name' }</span>
 </code></pre>
 <p>To see all available <code>toObject</code> options, read <a href="/docs/api.html#document_Document-toObject">this</a>.</p>
-<h3 id="typeKey"><a href="#typeKey">option: typeKey</a></h3>
+<h3 id="typeKey"><a href="#typeKey">选项: typeKey</a></h3>
 
 <p>By default, if you have an object with key &#39;type&#39; in your schema, mongoose
 will interpret it as a type declaration.</p>
@@ -527,7 +528,7 @@ uses to find type declarations, set the &#39;typeKey&#39; schema option.</p>
   name: { $type: <span class="hljs-built_in">String</span> }
 }, { typeKey: <span class="hljs-string">'$type'</span> }); <span class="hljs-comment">// A '$type' key means this object is a type declaration</span>
 </code></pre>
-<h3 id="validateBeforeSave"><a href="#validateBeforeSave">option: validateBeforeSave</a></h3>
+<h3 id="validateBeforeSave"><a href="#validateBeforeSave">选项: validateBeforeSave</a></h3>
 
 <p>By default, documents are automatically validated before they are saved to
 the database. This is to prevent saving an invalid document. If you want to
@@ -536,16 +537,16 @@ validation, you can set <code>validateBeforeSave</code> to false.</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({ name: <span class="hljs-built_in">String</span> });
 schema.set(<span class="hljs-string">'validateBeforeSave'</span>, <span class="hljs-literal">false</span>);
 schema.path(<span class="hljs-string">'name'</span>).validate(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">value</span>) </span>{
-    <span class="hljs-keyword">return</span> v != <span class="hljs-literal">null</span>;
+  <span class="hljs-keyword">return</span> v != <span class="hljs-literal">null</span>;
 });
 <span class="hljs-keyword">var</span> M = mongoose.model(<span class="hljs-string">'Person'</span>, schema);
 <span class="hljs-keyword">var</span> m = <span class="hljs-keyword">new</span> M({ name: <span class="hljs-literal">null</span> });
 m.validate(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
-    <span class="hljs-built_in">console</span>.log(err); <span class="hljs-comment">// Will tell you that null is not allowed.</span>
+  <span class="hljs-built_in">console</span>.log(err); <span class="hljs-comment">// Will tell you that null is not allowed.</span>
 });
 m.save(); <span class="hljs-comment">// Succeeds despite being invalid</span>
 </code></pre>
-<h3 id="versionKey"><a href="#versionKey">option: versionKey</a></h3>
+<h3 id="versionKey"><a href="#versionKey">选项: versionKey</a></h3>
 
 <p>The <code>versionKey</code> is a property set on each document when first created by
 Mongoose. This keys value contains the internal
@@ -572,7 +573,7 @@ thing.save(); <span class="hljs-comment">// { _somethingElse: 0, name: 'mongoose
 <span class="hljs-keyword">var</span> thing = <span class="hljs-keyword">new</span> Thing({ name: <span class="hljs-string">'no versioning please'</span> });
 thing.save(); <span class="hljs-comment">// { name: 'no versioning please' }</span>
 </code></pre>
-<h3 id="collation"><a href="#collation">option: collation</a></h3>
+<h3 id="collation"><a href="#collation">选项: collation</a></h3>
 
 <p>Sets a default <a href="https://docs.mongodb.com/manual/reference/collation/">collation</a>
 for every query and aggregation. <a href="http://thecodebarbarian.com/a-nodejs-perspective-on-mongodb-34-collations">Here&#39;s a beginner-friendly overview of collations</a>.</p>
@@ -591,7 +592,7 @@ MyModel.create([{ name: <span class="hljs-string">'val'</span> }, { name: <span 
     <span class="hljs-comment">// MongoDB will ignore case when matching.</span>
   });
 </code></pre>
-<h3 id="skipVersioning"><a href="#skipVersioning">option: skipVersioning</a></h3>
+<h3 id="skipVersioning"><a href="#skipVersioning">选项: skipVersioning</a></h3>
 
 <p><code>skipVersioning</code> allows excluding paths from versioning (i.e., the internal
 revision will not be incremented even if these paths are updated). DO NOT
@@ -601,7 +602,7 @@ on the parent document using the fully qualified path.</p>
 thing.dontVersionMe.push(<span class="hljs-string">'hey'</span>);
 thing.save(); <span class="hljs-comment">// version is not incremented</span>
 </code></pre>
-<h3 id="timestamps"><a href="#timestamps">option: timestamps</a></h3>
+<h3 id="timestamps"><a href="#timestamps">选项: timestamps</a></h3>
 
 <p>If set <code>timestamps</code>, mongoose assigns <code>createdAt</code> and <code>updatedAt</code> fields to
 your schema, the type assigned is <a href="./api.html#schema-date-js">Date</a>.</p>
@@ -612,7 +613,7 @@ the field name by setting <code>timestamps.createdAt</code> and <code>timestamps
 <span class="hljs-keyword">var</span> thing = <span class="hljs-keyword">new</span> Thing();
 thing.save(); <span class="hljs-comment">// `created_at` &amp; `updatedAt` will be included</span>
 </code></pre>
-<h3 id="useNestedStrict"><a href="#useNestedStrict">option: useNestedStrict</a></h3>
+<h3 id="useNestedStrict"><a href="#useNestedStrict">选项: useNestedStrict</a></h3>
 
 <p>In mongoose 4, <code>update()</code> and <code>findOneAndUpdate()</code> only check the top-level
 schema&#39;s strict mode setting.</p>
@@ -641,13 +642,15 @@ Parent.update({}, { <span class="hljs-string">'child.name'</span>: <span class="
   <span class="hljs-comment">// Works!</span>
 });
 </code></pre>
-<h3 id="plugins"><a href="#plugins">Pluggable</a></h3>
+<h3 id="plugins"><a href="#plugins">插件化</a></h3>
 
-<p>Schemas are also <a href="./plugins.html">pluggable</a> which allows us to package up reusable features into
-plugins that can be shared with the community or just between your projects.</p>
-<h3 id="next">Next Up</h3>
+<p>Schema可以<a href="./plugins.html">插件化</a>，
+这样我们就能够把重复使用的部分打包成插件，
+从而可以在社区或者项目之间共享。</p>
+<h3 id="next">接下来</h3>
 
-<p>Now that we&#39;ve covered <code>Schemas</code>, let&#39;s take a look at <a href="/docs/schematypes.html">SchemaTypes</a>.</p>
+<p>现在我们已经对<code>Schemas</code>有一个大概的了解，
+接下来的内容为<a href="/docs/schematypes.html">SchemaTypes</a>。</p>
 </div></div><script type="text/javascript">!function(name,path,ctx){
   var latest,prev=name!=='Keen'&&window.Keen?window.Keen:false;ctx[name]=ctx[name]||{ready:function(fn){var h=document.getElementsByTagName('head')[0],s=document.createElement('script'),w=window,loaded;s.onload=s.onerror=s.onreadystatechange=function(){if((s.readyState&&!(/^c|loade/.test(s.readyState)))||loaded){return}s.onload=s.onreadystatechange=null;loaded=1;latest=w.Keen;if(prev){w.Keen=prev}else{try{delete w.Keen}catch(e){w.Keen=void 0}}ctx[name]=latest;ctx[name].ready(fn)};s.async=1;s.src=path;h.parentNode.insertBefore(s,h)}}
 }('KeenAsync','https://d26b395fwzu5fz.cloudfront.net/keen-tracking-1.1.3.min.js',this);

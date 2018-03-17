@@ -121,7 +121,7 @@ block content
     <h3 id="query-helpers"><a href="#query-helpers">辅助查询函数</a></h3>
 
     你也可以添加辅助查询的函数，它就像实例方法一样，
-    但是只是对于mongoose的查询。辅助查询函数让你可以扩展mongoose的
+    但是只是用于mongoose的查询。辅助查询函数让你可以扩展mongoose的
     [链式查询生成器API](./queries.html)。
 
     ```javascript
@@ -186,10 +186,10 @@ block content
 
     <h3 id="virtuals"><a href="#virtuals">虚拟类型(Virtuals)</a></h3>
 
-    [Virtuals](./api.html#schema_Schema-virtual) are document properties that
-    you can get and set but that do not get persisted to MongoDB. The getters
-    are useful for formatting or combining fields, while setters are useful for
-    de-composing a single value into multiple values for storage.
+    [虚拟类型（Virtuals）](./api.html#schema_Schema-virtual) 
+    是你可以获取和设置的文档，但是却不会向MongoDB存储。
+    `getters` 对于格式化和组合字段非常有用，
+    `setters` 对于分解一个值为多个值并存储时，很有用。
 
     ```javascript
       // define a schema
@@ -209,17 +209,17 @@ block content
       });
     ```
 
-    Suppose you want to print out the person's full name. You could do it yourself:
+    如果你想要打印`person`的全名，你也可以自己拼接：
 
     ```javascript
     console.log(axl.name.first + ' ' + axl.name.last); // Axl Rose
     ```
 
-    But concatenating the first and last name every time can get cumbersome.
-    And what if you want to do some extra processing on the name, like
-    [removing diacritics?](https://www.npmjs.com/package/diacritics). A
-    [virtual property getter](./api.html#virtualtype_VirtualType-get) lets you
-    define a `fullName` property that won't get persisted to MongoDB.
+    但是每次使用时如果都要拼接字段，会非常不灵活。
+    而且如果你想在名字上做一些额外的处理，
+    比如[移除 diacritics](https://www.npmjs.com/package/diacritics)时，将会如何？
+    [虚拟属性 getter](./api.html#virtualtype_VirtualType-get)让你可以
+    定义一个 `fullName` 属性，而不会存在于MongoDB中。
 
     ```javascript
     personSchema.virtual('fullName').get(function () {
@@ -227,20 +227,20 @@ block content
     });
     ```
 
-    Now, mongoose will call your getter function every time you access the
-    `fullName` property:
+    当你每次获取 `fullName`属性时，mongoose 将会调用你定义的 `getter` 函数：
 
     ```javascript
     console.log(axl.fullName); // Axl Rose
     ```
 
-    If you use `toJSON()` or `toObject()` (or use `JSON.stringify()` on a
-    mongoose document) mongoose will *not* include virtuals by default.
-    Pass `{ virtuals: true }` to either
-    [toObject()](./api.html#document_Document-toObject) or `toJSON()`.
+    如果你使用 `toJSON()` 或 `toObject()` （或者在mongoose文档上使用 `JSON.stringify()`），
+    mongoose 默认*不会*包含虚拟属性。
+    如果想获取虚拟属性，需要向
+    [toObject()](./api.html#document_Document-toObject) 或 `toJSON()`中，
+    传入 `{ virtuals: true }` 的配置。
 
-    You can also add a custom setter to your virtual that will let you set both
-    first name and last name via the `fullName` virtual.
+    你也可以向虚拟属性中，添加自定义的 `setter`。
+    通过虚拟属性 `fullName`，你可以同时设置 `first name` 和 `last name` 的值。
 
     ```javascript
     personSchema.virtual('fullName').
@@ -250,33 +250,33 @@ block content
         this.name.last = v.substr(v.indexOf(' ') + 1);
       });
 
-    axl.fullName = 'William Rose'; // Now `axl.name.first` is "William"
+    axl.fullName = 'William Rose'; // 此时， `axl.name.first` 的值为 "William"
     ```
 
-    Virtual property setters are applied before other validation. So the example
-    above would still work even if the `first` and `last` name fields were
-    required.
+    在其他验证之前，虚拟属性的setter非常实用。
+    所以尽管上例中 `first` 和 `last` 字段都是必须的，但仍然可以运行。
 
-    Only non-virtual properties work as part of queries and for field selection.
-    Since virtuals are not stored in MongoDB, you can't query with them.
+    虚拟属性不能做为queries和字段选择使用。
+    因为虚拟属性没有存在于MongoDB种，你不能用他们来进行查询。
 
-    <h5 id="aliases"><a href="#aliases">Aliases</a></h5>
+    <h5 id="aliases"><a href="#aliases">别名（Aliases）</a></h5>
 
-    Aliases are a particular type of virtual where the getter and setter
-    seamlessly get and set another property. This is handy for saving network
-    bandwidth, so you can convert a short property name stored in the database
-    into a longer name for code readability.
+    别名是一个很特别的虚拟属性类型，
+    它的setter和getter将无缝地获取其他属性的get和set。
+    这样对于节省带宽是非常方便的，所以为了提高代码可读性，
+    你可以将数据库中的属性转换为一个简短的属性名。
 
     ```javascript
     var personSchema = new Schema({
       n: {
         type: String,
-        // Now accessing `name` will get you the value of `n`, and setting `n` will set the value of `name`
+        // 访问`name`将返回`n`的值, 
+        // 设置 `n` 值同样也会设置 `name` 的值
         alias: 'name'
       }
     });
 
-    // Setting `name` will propagate to `n`
+    // 设置 `name` 的值将会广播给 `n`
     var person = new Person({ name: 'Val' });
     console.log(person); // { n: 'Val' }
     console.log(person.toObject({ virtuals: true })); // { n: 'Val', name: 'Val' }
@@ -286,10 +286,10 @@ block content
     console.log(person); // { n: 'Not Val' }
     ```
 
-    <h3 id="options"><a href="#options">Options</a></h3>
+    <h3 id="options"><a href="#options">配置（Options）</a></h3>
 
-    Schemas have a few configurable options which can be passed to the
-    constructor or `set` directly:
+    `Schemas` 有少量可配置的属性，
+    可以通过传递给构造函数，或者直接 `set` 来进行配置：
 
     ```javascript
     new Schema({..}, options);
@@ -300,7 +300,7 @@ block content
     schema.set(option, value);
     ```
 
-    Valid options:
+    有效的配置选项:
 
     - [autoIndex](#autoIndex)
     - [bufferCommands](#bufferCommands)
@@ -322,9 +322,13 @@ block content
     - [skipVersioning](#skipVersioning)
     - [timestamps](#timestamps)
 
-    <h3 id="autoIndex"><a href="#autoIndex">option: autoIndex</a></h3>
+    <h3 id="autoIndex"><a href="#autoIndex">选项: autoIndex</a></h3>
 
-    At application startup, Mongoose sends a [`createIndex` command](https://docs.mongodb.com/manual/reference/method/db.collection.createIndex/#db.collection.createIndex) for each index declared in your `Schema`. As of Mongoose v3, indexes are created in the `background` by default. If you wish to disable the auto-creation feature and manually handle when indexes are created, set your `Schema`s `autoIndex` option to `false` and use the [ensureIndexes](./api.html#model_Model.ensureIndexes) method on your model.
+    在应用开始运行时，Mongoose会向你的`Schmea`中的每一个索引发送一个[`createIndex` 命令](https://docs.mongodb.com/manual/reference/method/db.collection.createIndex/#db.collection.createIndex)
+    从Mongoose v3开始，索引是默认自动生成的。
+    如果你想禁用自动生成索引的功能，需要在索引生成的时候手动操作，
+    也就是把你的 `Schema` 的 `autoIndex` 选项设置为 `false`，
+    并在你的model上使用[ensureIndexes](./api.html#model_Model.ensureIndexes)方法。
 
     ```javascript
     var schema = new Schema({..}, { autoIndex: false });
@@ -332,11 +336,10 @@ block content
     Clock.ensureIndexes(callback);
     ```
 
-    <h3 id="bufferCommands"><a href="#bufferCommands">option: bufferCommands</a></h3>
+    <h3 id="bufferCommands"><a href="#bufferCommands">选项: bufferCommands</a></h3>
 
-    By default, mongoose buffers commands when the connection goes down until
-    the driver manages to reconnect. To disable buffering, set `bufferCommands`
-    to false.
+    默认情况下，从连接中断开始，直到重新连接，mongoose会缓存指令。
+    设置`bufferCommands` 为 `false` 可以禁用缓存。
 
     ```javascript
     var schema = new Schema({..}, { bufferCommands: false });
@@ -346,156 +349,154 @@ block content
 
     ```javascript
     mongoose.set('bufferCommands', true);
-    // Schema option below overrides the above, if the schema option is set.
+    // 如果schema的选项是通过set设置的，下面的选项将会覆盖上面的
     var schema = new Schema({..}, { bufferCommands: false });
     ```
 
-    <h3 id="capped"><a href="#capped">option: capped</a></h3>
+    <h3 id="capped"><a href="#capped">选项: capped</a></h3>
 
-    Mongoose supports MongoDBs [capped](http://www.mongodb.org/display/DOCS/Capped+Collections)
-    collections. To specify the underlying MongoDB collection be `capped`, set
-    the `capped` option to the maximum size of the collection in
-    [bytes](http://www.mongodb.org/display/DOCS/Capped+Collections#CappedCollections-size.).
+    Mongoose支持MongoDB的[固定(capped)](http://www.mongodb.org/display/DOCS/Capped+Collections)集合。
+    确认设置基础的MongoDB集合为 `capped`，
+    `capped` 选项可以在[bytes](http://www.mongodb.org/display/DOCS/Capped+Collections#CappedCollections-size.)上
+    限制集合的最大占用空间。
 
     ```javascript
     new Schema({..}, { capped: 1024 });
     ```
 
-    The `capped` option may also be set to an object if you want to pass
-    additional options like [max](http://www.mongodb.org/display/DOCS/Capped+Collections#CappedCollections-max)
-    or [autoIndexId](http://www.mongodb.org/display/DOCS/Capped+Collections#CappedCollections-autoIndexId).
-    In this case you must explicitly pass the `size` option, which is required.
+    如果你想传入一些类似于
+    [max](http://www.mongodb.org/display/DOCS/Capped+Collections#CappedCollections-max)
+    或 [autoIndexId](http://www.mongodb.org/display/DOCS/Capped+Collections#CappedCollections-autoIndexId)
+    这样的选项时，`capped` 也可以设置为一个对象。
+    这种情况下，`size` 选项是必填项。
 
     ```javascript
     new Schema({..}, { capped: { size: 1024, max: 1000, autoIndexId: true } });
     ```
 
-    <h3 id="collection"><a href="#collection">option: collection</a></h3>
+    <h3 id="collection"><a href="#collection">选项: collection</a></h3>
 
-    Mongoose by default produces a collection name by passing the model name to
-    the [utils.toCollectionName](./api.html#utils_exports.toCollectionName) method.
-    This method pluralizes the name. Set this option if you need a different name
-    for your collection.
-
+    默认情况下，Mongoose可以通过[utils.toCollectionName](./api.html#utils_exports.toCollectionName)方法，
+    传入model的名字，来获取一个集合的名字。
+    这个方法会把名字变为复数。
+    对于你的集合，如果你想要一个不同的名字，可以设置此选项。
     ```javascript
     var dataSchema = new Schema({..}, { collection: 'data' });
     ```
 
-    <h3 id="id"><a href="#id">option: id</a></h3>
+    <h3 id="id"><a href="#id">选项: id</a></h3>
 
-    Mongoose assigns each of your schemas an `id` virtual getter by default
-    which returns the documents `_id` field cast to a string, or in the case of
-    ObjectIds, its hexString. If you don't want an `id` getter added to your
-    schema, you may disable it passing this option at schema construction time.
+    Mongoose默认会给你的每一个schema分配一个 `id` 虚拟属性，
+    其值为转化为string后的文档 `_id` 字段，也就是ObjectsId的十六进制字符串。
+    如果你不想在schema中添加 `id` 的getter，
+    你可以通过在schema构建的时候，传入参数禁用。
 
     ```javascript
-    // default behavior
+    // 默认行为
     var schema = new Schema({ name: String });
     var Page = mongoose.model('Page', schema);
     var p = new Page({ name: 'mongodb.org' });
     console.log(p.id); // '50341373e894ad16347efe01'
 
-    // disabled id
+    // 禁用 id
     var schema = new Schema({ name: String }, { id: false });
     var Page = mongoose.model('Page', schema);
     var p = new Page({ name: 'mongodb.org' });
     console.log(p.id); // undefined
     ```
 
-    <h3 id="_id"><a href="#_id">option: _id</a></h3>
+    <h3 id="_id"><a href="#_id">选项: _id</a></h3>
 
-    Mongoose assigns each of your schemas an `_id` field by default if one
-    is not passed into the [Schema](/docs/api.html#schema-js) constructor.
-    The type assigned is an [ObjectId](/docs/api.html#schema_Schema.Types)
-    to coincide with MongoDB's default behavior. If you don't want an `_id`
-    added to your schema at all, you may disable it using this option.
+    如果one没有传入[Schema](/docs/api.html#schema-js)构造函数，
+    Mongoose默认会给你的每一个schema分配一个 `_id` 字段。
+    为了和MongoDB的默认行为保持一致，
+    _id的类型会指定为[ObjectId](/docs/api.html#schema_Schema.Types)。
 
-    You can **only** use this option on sub-documents. Mongoose can't
-    save a document without knowing its id, so you will get an error if
-    you try to save a document without an `_id`.
+    你**只能**在子文档中使用这些选项。
+    Mongoose不能在没有id时，保存一个文档，
+    所以当你没有_id时保存文档，将会触发错误事件。
 
     ```javascript
-    // default behavior
+    // 默认行为
     var schema = new Schema({ name: String });
     var Page = mongoose.model('Page', schema);
     var p = new Page({ name: 'mongodb.org' });
     console.log(p); // { _id: '50341373e894ad16347efe01', name: 'mongodb.org' }
 
-    // disabled _id
+    // 禁用 _id
     var childSchema = new Schema({ name: String }, { _id: false });
     var parentSchema = new Schema({ children: [childSchema] });
 
     var Model = mongoose.model('Model', parentSchema);
 
     Model.create({ children: [{ name: 'Luke' }] }, function(error, doc) {
-      // doc.children[0]._id will be undefined
+      // doc.children[0]._id 的值将为 undefined
     });
     ```
 
-    <h3 id="minimize"><a href="#minimize">option: minimize</a></h3>
+    <h3 id="minimize"><a href="#minimize">选项: minimize</a></h3>
 
-    Mongoose will, by default, "minimize" schemas by removing empty objects.
+    默认情况下，Mongoose将会通过删除空对象来 “最小化” schemas。
 
     ```javascript
     var schema = new Schema({ name: String, inventory: {} });
     var Character = mongoose.model('Character', schema);
 
-    // will store `inventory` field if it is not empty
+    // `inventory`如果不是空对象，将进行存储
     var frodo = new Character({ name: 'Frodo', inventory: { ringOfPower: 1 }});
     Character.findOne({ name: 'Frodo' }, function(err, character) {
       console.log(character); // { name: 'Frodo', inventory: { ringOfPower: 1 }}
     });
 
-    // will not store `inventory` field if it is empty
+    // `inventory`为空对象，将不会存储
     var sam = new Character({ name: 'Sam', inventory: {}});
     Character.findOne({ name: 'Sam' }, function(err, character) {
       console.log(character); // { name: 'Sam' }
     });
     ```
 
-    This behavior can be overridden by setting `minimize` option to `false`. It
-    will then store empty objects.
+    这个行为可以通过设置 `minimize` 为 `false` 来覆盖。
+    设置后，将会保存空对象。
 
     ```javascript
     var schema = new Schema({ name: String, inventory: {} }, { minimize: false });
     var Character = mongoose.model('Character', schema);
 
-    // will store `inventory` if empty
+    // `inventory`为空时也会保存
     var sam = new Character({ name: 'Sam', inventory: {}});
     Character.findOne({ name: 'Sam' }, function(err, character) {
       console.log(character); // { name: 'Sam', inventory: {}}
     });
     ```
 
-    <h3 id="read"><a href="#read">option: read</a></h3>
+    <h3 id="read"><a href="#read">选项: read</a></h3>
 
-    Allows setting [query#read](/docs/api.html#query_Query-read) options at the
-    schema level, providing us a way to apply default
-    [ReadPreferences](http://docs.mongodb.org/manual/applications/replication/#replica-set-read-preference)
-    to all queries derived from a model.
+    允许在schema级设置[query#read](/docs/api.html#query_Query-read)的值，
+    对所有从model衍生来的query提供了一种应用默认
+    [ReadPreferences](http://docs.mongodb.org/manual/applications/replication/#replica-set-read-preference)的方式。
 
     ```javascript
-    var schema = new Schema({..}, { read: 'primary' });            // also aliased as 'p'
-    var schema = new Schema({..}, { read: 'primaryPreferred' });   // aliased as 'pp'
-    var schema = new Schema({..}, { read: 'secondary' });          // aliased as 's'
-    var schema = new Schema({..}, { read: 'secondaryPreferred' }); // aliased as 'sp'
-    var schema = new Schema({..}, { read: 'nearest' });            // aliased as 'n'
+    var schema = new Schema({..}, { read: 'primary' });            // 别名 'p'
+    var schema = new Schema({..}, { read: 'primaryPreferred' });   // 别名 'pp'
+    var schema = new Schema({..}, { read: 'secondary' });          // 别名 's'
+    var schema = new Schema({..}, { read: 'secondaryPreferred' }); // 别名 'sp'
+    var schema = new Schema({..}, { read: 'nearest' });            // 别名 'n'
     ```
 
-    The alias of each pref is also permitted so instead of having to type out
-    'secondaryPreferred' and getting the spelling wrong, we can simply pass 'sp'.
+    每一个由单词首字母组成的别名是可以使用的，从而避免拼错单词。
 
-    The read option also allows us to specify _tag sets_. These tell the
-    [driver](https://github.com/mongodb/node-mongodb-native/) from which members
-    of the replica-set it should attempt to read. Read more about tag sets
-    [here](http://docs.mongodb.org/manual/applications/replication/#tag-sets) and
-    [here](http://mongodb.github.com/node-mongodb-native/driver-articles/anintroductionto1_1and2_2.html#read-preferences).
+    `read` 选项允许我们指定 _tag sets_。这样可以告诉
+    [驱动（driver）](https://github.com/mongodb/node-mongodb-native/)
+    从副本集的哪一个成员读取。
+    在[这里](http://docs.mongodb.org/manual/applications/replication/#tag-sets)
+    和[这里](http://mongodb.github.com/node-mongodb-native/driver-articles/anintroductionto1_1and2_2.html#read-preferences)
+    可以阅读更多关于标签集合（tag sets）的内容。
 
-    _NOTE: you may also specify the driver read pref [strategy](http://mongodb.github.com/node-mongodb-native/api-generated/replset.html?highlight=strategy)
-    option when connecting:_
+    _注意：在连接的时候，你也可以指定驱动优先读取
+    [strategy](http://mongodb.github.com/node-mongodb-native/api-generated/replset.html?highlight=strategy)选项：_
 
     ```javascript
-    // pings the replset members periodically to track network latency
+    // 周期性地ping副本集，来测量网络延时
     var options = { replset: { strategy: 'ping' }};
     mongoose.connect(uri, options);
 
@@ -503,21 +504,20 @@ block content
     mongoose.model('JellyBean', schema);
     ```
 
-    <h3 id="shardKey"><a href="#shardKey">option: shardKey</a></h3>
+    <h3 id="shardKey"><a href="#shardKey">选项: shardKey</a></h3>
 
-    The `shardKey` option is used when we have a [sharded MongoDB architecture](http://www.mongodb.org/display/DOCS/Sharding+Introduction).
-    Each sharded collection is given a shard key which must be present in all
-    insert/update operations. We just need to set this schema option to the same
-    shard key and we’ll be all set.
+    `sharded`选项用于当我们有一个[碎片化的 MongoDB 结构](http://www.mongodb.org/display/DOCS/Sharding+Introduction)时。
+    在所有的插入/更新操作时，每一个碎片化的集合会给出一个 `shard key`。
+    我们只需要把schema的shard设置为同一值既可。
 
     ```javascript
     new Schema({ .. }, { shardKey: { tag: 1, name: 1 }})
     ```
 
-    _Note that Mongoose does not send the `shardcollection` command for you. You
-    must configure your shards yourself._
+    _注意 Mongoose 不会发送 `shardcollection` 指令给你。
+    你必须自己配置你的shard。_
 
-    <h3 id="strict">option: strict</h3>
+    <h3 id="strict">选项: strict</h3>
 
     The strict option, (enabled by default), ensures that values passed to our
     model constructor that were not specified in our schema do not get saved to
@@ -567,7 +567,7 @@ block content
     thing.save(); // iAmNotInTheSchema is never saved to the db
     ```
 
-    <h3 id="strictQuery">option: strictQuery</h3>
+    <h3 id="strictQuery">选项: strictQuery</h3>
 
     For backwards compatibility, the `strict` option does **not** apply to
     the `filter` parameter for queries.
@@ -602,7 +602,7 @@ block content
     MyModel.find({ notInSchema: 1 });
     ```
 
-    <h3 id="toJSON"><a href="#toJSON">option: toJSON</a></h3>
+    <h3 id="toJSON"><a href="#toJSON">选项: toJSON</a></h3>
 
     Exactly the same as the [toObject](#toObject) option but only applies when
     the documents `toJSON` method is called.
@@ -623,7 +623,7 @@ block content
 
     To see all available `toJSON/toObject` options, read [this](/docs/api.html#document_Document-toObject).
 
-    <h3 id="toObject"><a href="#toObject">option: toObject</a></h3>
+    <h3 id="toObject"><a href="#toObject">选项: toObject</a></h3>
 
     Documents have a [toObject](/docs/api.html#document_Document-toObject) method
     which converts the mongoose document into a plain javascript object. This
@@ -647,7 +647,7 @@ block content
 
     To see all available `toObject` options, read [this](/docs/api.html#document_Document-toObject).
 
-    <h3 id="typeKey"><a href="#typeKey">option: typeKey</a></h3>
+    <h3 id="typeKey"><a href="#typeKey">选项: typeKey</a></h3>
 
     By default, if you have an object with key 'type' in your schema, mongoose
     will interpret it as a type declaration.
@@ -670,7 +670,7 @@ block content
     }, { typeKey: '$type' }); // A '$type' key means this object is a type declaration
     ```
 
-    <h3 id="validateBeforeSave"><a href="#validateBeforeSave">option: validateBeforeSave</a></h3>
+    <h3 id="validateBeforeSave"><a href="#validateBeforeSave">选项: validateBeforeSave</a></h3>
 
     By default, documents are automatically validated before they are saved to
     the database. This is to prevent saving an invalid document. If you want to
@@ -681,17 +681,17 @@ block content
     var schema = new Schema({ name: String });
     schema.set('validateBeforeSave', false);
     schema.path('name').validate(function (value) {
-        return v != null;
+      return v != null;
     });
     var M = mongoose.model('Person', schema);
     var m = new M({ name: null });
     m.validate(function(err) {
-        console.log(err); // Will tell you that null is not allowed.
+      console.log(err); // Will tell you that null is not allowed.
     });
     m.save(); // Succeeds despite being invalid
     ```
 
-    <h3 id="versionKey"><a href="#versionKey">option: versionKey</a></h3>
+    <h3 id="versionKey"><a href="#versionKey">选项: versionKey</a></h3>
 
     The `versionKey` is a property set on each document when first created by
     Mongoose. This keys value contains the internal
@@ -724,7 +724,7 @@ block content
     thing.save(); // { name: 'no versioning please' }
     ```
 
-    <h3 id="collation"><a href="#collation">option: collation</a></h3>
+    <h3 id="collation"><a href="#collation">选项: collation</a></h3>
 
     Sets a default [collation](https://docs.mongodb.com/manual/reference/collation/)
     for every query and aggregation. [Here's a beginner-friendly overview of collations](http://thecodebarbarian.com/a-nodejs-perspective-on-mongodb-34-collations).
@@ -746,7 +746,7 @@ block content
       });
     ```
 
-    <h3 id="skipVersioning"><a href="#skipVersioning">option: skipVersioning</a></h3>
+    <h3 id="skipVersioning"><a href="#skipVersioning">选项: skipVersioning</a></h3>
 
     `skipVersioning` allows excluding paths from versioning (i.e., the internal
     revision will not be incremented even if these paths are updated). DO NOT
@@ -759,7 +759,7 @@ block content
     thing.save(); // version is not incremented
     ```
 
-    <h3 id="timestamps"><a href="#timestamps">option: timestamps</a></h3>
+    <h3 id="timestamps"><a href="#timestamps">选项: timestamps</a></h3>
 
     If set `timestamps`, mongoose assigns `createdAt` and `updatedAt` fields to
     your schema, the type assigned is [Date](./api.html#schema-date-js).
@@ -774,7 +774,7 @@ block content
     thing.save(); // `created_at` & `updatedAt` will be included
     ```
 
-    <h3 id="useNestedStrict"><a href="#useNestedStrict">option: useNestedStrict</a></h3>
+    <h3 id="useNestedStrict"><a href="#useNestedStrict">选项: useNestedStrict</a></h3>
 
     In mongoose 4, `update()` and `findOneAndUpdate()` only check the top-level
     schema's strict mode setting.
@@ -809,11 +809,13 @@ block content
     });
     ```
 
-    <h3 id="plugins"><a href="#plugins">Pluggable</a></h3>
+    <h3 id="plugins"><a href="#plugins">插件化</a></h3>
 
-    Schemas are also [pluggable](./plugins.html) which allows us to package up reusable features into
-    plugins that can be shared with the community or just between your projects.
+    Schema可以[插件化](./plugins.html)，
+    这样我们就能够把重复使用的部分打包成插件，
+    从而可以在社区或者项目之间共享。
 
-    <h3 id="next">Next Up</h3>
+    <h3 id="next">接下来</h3>
 
-    Now that we've covered `Schemas`, let's take a look at [SchemaTypes](/docs/schematypes.html).
+    现在我们已经对`Schemas`有一个大概的了解，
+    接下来的内容为[SchemaTypes](/docs/schematypes.html)。

@@ -2,18 +2,17 @@ extends layout
 
 block content
   :markdown
-    <h2 id="schematypes"><a href="#schematypes">SchemaTypes</a></h2>
+    <h2 id="schematypes"><a href="#schematypes">模式类型（SchemaTypes）</a></h2>
 
-    SchemaTypes handle definition of path
-    [defaults](./api.html#schematype_SchemaType-default),
-    [validation](./api.html#schematype_SchemaType-validate),
-    [getters](./api.html#schematype_SchemaType-get),
-    [setters](./api.html#schematype_SchemaType-set),
-    [field selection defaults](./api.html#schematype_SchemaType-select) for
-    [queries](./api.html#query-js),
-    and other general characteristics for Strings and Sumbers.
+    Schema类型控制
+    [defaults](./api.html#schematype_SchemaType-default)、
+    [validation](./api.html#schematype_SchemaType-validate)、
+    [getters](./api.html#schematype_SchemaType-get)、
+    [setters](./api.html#schematype_SchemaType-set)、
+    用于[queries](./api.html#query-js) 的 [field selection defaults](./api.html#schematype_SchemaType-select)
+    以及其他String和Number通用的特性的定义。
 
-    The following are all the valid SchemaTypes in mongoose.
+    下面的类型在mongoose中都是合法的Schema类型。
 
     - [String](./api.html#schema-string-js)
     - [Number](./api.html#schema-number-js)
@@ -25,7 +24,7 @@ block content
     - Array
     - Decimal128
 
-    <h4>Example</h4>
+    <h4>例子</h4>
 
     ```javaScript
     var schema = new Schema({
