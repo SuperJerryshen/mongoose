@@ -414,71 +414,70 @@ mongoose.model(<span class="hljs-string">'JellyBean'</span>, schema);
 你必须自己配置你的shard。</em></p>
 <h3 id="strict">选项: strict</h3>
 
-<p>The strict option, (enabled by default), ensures that values passed to our
-model constructor that were not specified in our schema do not get saved to
-the db.</p>
+<p><code>strict</code>选项（默认打开）确保传入我们model构造函数中，
+但没在schema中定义的值，不会保存到数据库中。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> thingSchema = <span class="hljs-keyword">new</span> Schema({..})
 <span class="hljs-keyword">var</span> Thing = mongoose.model(<span class="hljs-string">'Thing'</span>, thingSchema);
 <span class="hljs-keyword">var</span> thing = <span class="hljs-keyword">new</span> Thing({ iAmNotInTheSchema: <span class="hljs-literal">true</span> });
-thing.save(); <span class="hljs-comment">// iAmNotInTheSchema is not saved to the db</span>
+thing.save(); <span class="hljs-comment">// iAmNotInTheSchema 不会保存到数据库中</span>
 
-<span class="hljs-comment">// set to false..</span>
+<span class="hljs-comment">// 设置为 false</span>
 <span class="hljs-keyword">var</span> thingSchema = <span class="hljs-keyword">new</span> Schema({..}, { strict: <span class="hljs-literal">false</span> });
 <span class="hljs-keyword">var</span> thing = <span class="hljs-keyword">new</span> Thing({ iAmNotInTheSchema: <span class="hljs-literal">true</span> });
-thing.save(); <span class="hljs-comment">// iAmNotInTheSchema is now saved to the db!!</span>
+thing.save(); <span class="hljs-comment">// 现在 iAmNotInTheSchema 可以保存到数据库</span>
 </code></pre>
-<p>This also affects the use of <code>doc.set()</code> to set a property value.</p>
+<p>同样会影响 <code>doc.set()</code> 设置的属性值。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> thingSchema = <span class="hljs-keyword">new</span> Schema({..})
 <span class="hljs-keyword">var</span> Thing = mongoose.model(<span class="hljs-string">'Thing'</span>, thingSchema);
 <span class="hljs-keyword">var</span> thing = <span class="hljs-keyword">new</span> Thing;
 thing.set(<span class="hljs-string">'iAmNotInTheSchema'</span>, <span class="hljs-literal">true</span>);
-thing.save(); <span class="hljs-comment">// iAmNotInTheSchema is not saved to the db</span>
+thing.save(); <span class="hljs-comment">// iAmNotInTheSchema 没有保存到数据库</span>
 </code></pre>
-<p>This value can be overridden at the model instance level by passing a second
+<p>通过传递第二个布尔值属性，在model实例层，值可能会被覆盖。
+This value can be overridden at the model instance level by passing a second
 boolean argument:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Thing = mongoose.model(<span class="hljs-string">'Thing'</span>);
-<span class="hljs-keyword">var</span> thing = <span class="hljs-keyword">new</span> Thing(doc, <span class="hljs-literal">true</span>);  <span class="hljs-comment">// enables strict mode</span>
-<span class="hljs-keyword">var</span> thing = <span class="hljs-keyword">new</span> Thing(doc, <span class="hljs-literal">false</span>); <span class="hljs-comment">// disables strict mode</span>
+<span class="hljs-keyword">var</span> thing = <span class="hljs-keyword">new</span> Thing(doc, <span class="hljs-literal">true</span>);  <span class="hljs-comment">// 打开 strict 模式</span>
+<span class="hljs-keyword">var</span> thing = <span class="hljs-keyword">new</span> Thing(doc, <span class="hljs-literal">false</span>); <span class="hljs-comment">// 关闭 strict 模式</span>
 </code></pre>
-<p>The <code>strict</code> option may also be set to <code>&quot;throw&quot;</code> which will cause errors
-to be produced instead of dropping the bad data.</p>
-<p><em>NOTE: Any key/val set on the instance that does not exist in your schema is always ignored, regardless of schema option.</em></p>
+<p><code>strict</code> 选项页可以设置为 <code>throw</code>。
+此时如果设置了非法的值，将会报错。</p>
+<p><em>注意：如果不设置schema选项，则任何设置在实例上，并且在schema上不存在的键值对总会被忽略。</em></p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> thingSchema = <span class="hljs-keyword">new</span> Schema({..})
 <span class="hljs-keyword">var</span> Thing = mongoose.model(<span class="hljs-string">'Thing'</span>, thingSchema);
 <span class="hljs-keyword">var</span> thing = <span class="hljs-keyword">new</span> Thing;
 thing.iAmNotInTheSchema = <span class="hljs-literal">true</span>;
-thing.save(); <span class="hljs-comment">// iAmNotInTheSchema is never saved to the db</span>
+thing.save(); <span class="hljs-comment">// iAmNotInTheSchema 永远不会存储到数据库中</span>
 </code></pre>
 <h3 id="strictQuery">选项: strictQuery</h3>
 
-<p>For backwards compatibility, the <code>strict</code> option does <strong>not</strong> apply to
-the <code>filter</code> parameter for queries.</p>
+<p>为了向下兼容，对于<code>queries</code>，设置了<code>strict</code> 选项，将<strong>不能</strong>用于参数过滤。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">const</span> mySchema = <span class="hljs-keyword">new</span> Schema({ field: <span class="hljs-built_in">Number</span> }, { strict: <span class="hljs-literal">true</span> });
 <span class="hljs-keyword">const</span> MyModel = mongoose.model(<span class="hljs-string">'Test'</span>, mySchema);
 
-<span class="hljs-comment">// Mongoose will **not** filter out `notInSchema: 1`, despite `strict: true`</span>
+<span class="hljs-comment">// Mongoose 将 **不会** 过滤出 `notInSchema: 1` 的文档, 尽管 `strict: true`</span>
 MyModel.find({ notInSchema: <span class="hljs-number">1</span> });
 </code></pre>
-<p>The <code>strict</code> option does apply to updates.</p>
-<pre><code class="lang-javascript"><span class="hljs-comment">// Mongoose will strip out `notInSchema` from the update if `strict` is</span>
-<span class="hljs-comment">// not `false`</span>
+<p><code>strict</code> 选项只用户数据更新。</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// 如果 `strict` 的值不是 `false`</span>
+<span class="hljs-comment">// 则 Mongoose 将会从更新中剔除 `notInSchema` 的值</span>
 MyModel.updateMany({}, { $set: { notInSchema: <span class="hljs-number">1</span> } });
 </code></pre>
-<p>Mongoose has a separate <code>strictQuery</code> option to toggle strict mode for
-the <code>filter</code> parameter to queries.</p>
+<p>Mongoose 有一个单独的 <code>strictQuery</code> 选项来切换严格模式是否可以进行过滤查询。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">const</span> mySchema = <span class="hljs-keyword">new</span> Schema({ field: <span class="hljs-built_in">Number</span> }, {
   strict: <span class="hljs-literal">true</span>,
-  strictQuery: <span class="hljs-literal">true</span> <span class="hljs-comment">// Turn on strict mode for query filters</span>
+  strictQuery: <span class="hljs-literal">true</span> <span class="hljs-comment">// 打开严格模式下的过滤查询</span>
 });
 <span class="hljs-keyword">const</span> MyModel = mongoose.model(<span class="hljs-string">'Test'</span>, mySchema);
 
-<span class="hljs-comment">// Mongoose will strip out `notInSchema: 1` because `strictQuery` is `true`</span>
+<span class="hljs-comment">// 因为 `strictQuery` 的值为 `true`</span>
+<span class="hljs-comment">// 所以 Mongoose 将会剔除 `notInSchema: 1` 的值</span>
 MyModel.find({ notInSchema: <span class="hljs-number">1</span> });
 </code></pre>
 <h3 id="toJSON"><a href="#toJSON">选项: toJSON</a></h3>
 
-<p>Exactly the same as the <a href="#toObject">toObject</a> option but only applies when
-the documents <code>toJSON</code> method is called.</p>
+<p>准确的说，和 <a href="#toObject">toObject</a> 选项一样，
+但是只适用于文档的 <code>toJSON</code> 方法被调用的时候。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({ name: <span class="hljs-built_in">String</span> });
 schema.path(<span class="hljs-string">'name'</span>).get(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">v</span>) </span>{
   <span class="hljs-keyword">return</span> v + <span class="hljs-string">' is my name'</span>;
@@ -488,10 +487,10 @@ schema.set(<span class="hljs-string">'toJSON'</span>, { getters: <span class="hl
 <span class="hljs-keyword">var</span> m = <span class="hljs-keyword">new</span> M({ name: <span class="hljs-string">'Max Headroom'</span> });
 <span class="hljs-built_in">console</span>.log(m.toObject()); <span class="hljs-comment">// { _id: 504e0cd7dd992d9be2f20b6f, name: 'Max Headroom' }</span>
 <span class="hljs-built_in">console</span>.log(m.toJSON()); <span class="hljs-comment">// { _id: 504e0cd7dd992d9be2f20b6f, name: 'Max Headroom is my name' }</span>
-<span class="hljs-comment">// since we know toJSON is called whenever a js object is stringified:</span>
+<span class="hljs-comment">// 只要toJSON被调用，js对象无论何时都会被字符串化:</span>
 <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(m)); <span class="hljs-comment">// { "_id": "504e0cd7dd992d9be2f20b6f", "name": "Max Headroom is my name" }</span>
 </code></pre>
-<p>To see all available <code>toJSON/toObject</code> options, read <a href="/docs/api.html#document_Document-toObject">this</a>.</p>
+<p>想要了解所有支持<code>toJSON/toObject</code>的选项，请查看 <a href="/docs/api.html#document_Document-toObject">这里</a>。</p>
 <h3 id="toObject"><a href="#toObject">选项: toObject</a></h3>
 
 <p>Documents have a <a href="/docs/api.html#document_Document-toObject">toObject</a> method
@@ -510,30 +509,32 @@ schema.set(<span class="hljs-string">'toObject'</span>, { getters: <span class="
 <span class="hljs-keyword">var</span> m = <span class="hljs-keyword">new</span> M({ name: <span class="hljs-string">'Max Headroom'</span> });
 <span class="hljs-built_in">console</span>.log(m); <span class="hljs-comment">// { _id: 504e0cd7dd992d9be2f20b6f, name: 'Max Headroom is my name' }</span>
 </code></pre>
-<p>To see all available <code>toObject</code> options, read <a href="/docs/api.html#document_Document-toObject">this</a>.</p>
+<p>查看所有可用的 <code>toObject</code> 选项，请看<a href="/docs/api.html#document_Document-toObject">这里</a>。</p>
 <h3 id="typeKey"><a href="#typeKey">选项: typeKey</a></h3>
 
-<p>By default, if you have an object with key &#39;type&#39; in your schema, mongoose
+<p>默认情况下，如果在schema中的对象如果有一个 <code>type</code> 的键，
+则 mongoose 会将其做为类型声明来处理。
+By default, if you have an object with key &#39;type&#39; in your schema, mongoose
 will interpret it as a type declaration.</p>
-<pre><code class="lang-javascript"><span class="hljs-comment">// Mongoose interprets this as 'loc is a String'</span>
+<pre><code class="lang-javascript"><span class="hljs-comment">// Mongoose 将会认为 'loc' 是一个 'String'</span>
 <span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({ loc: { type: <span class="hljs-built_in">String</span>, coordinates: [<span class="hljs-built_in">Number</span>] } });
 </code></pre>
-<p>However, for applications like <a href="http://docs.mongodb.org/manual/reference/geojson/">geoJSON</a>,
-the &#39;type&#39; property is important. If you want to control which key mongoose
-uses to find type declarations, set the &#39;typeKey&#39; schema option.</p>
+<p>对于像 <a href="http://docs.mongodb.org/manual/reference/geojson/">geoJSON</a> 
+这样的应用，<code>type</code> 属性将会非常重要。
+你可以通过设置 &#39;typeKey&#39; 属性值，来找到 mongoose 正在使用的那个键的类型声明。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({
-  <span class="hljs-comment">// Mongoose interpets this as 'loc is an object with 2 keys, type and coordinates'</span>
+  <span class="hljs-comment">// Mongoose 将其解释为 'loc 是一个拥有两个键(type 和 coordinates)的对象'</span>
   loc: { type: <span class="hljs-built_in">String</span>, coordinates: [<span class="hljs-built_in">Number</span>] },
-  <span class="hljs-comment">// Mongoose interprets this as 'name is a String'</span>
+  <span class="hljs-comment">// Mongoose 将其解释为 'name 是一个 String'</span>
   name: { $type: <span class="hljs-built_in">String</span> }
-}, { typeKey: <span class="hljs-string">'$type'</span> }); <span class="hljs-comment">// A '$type' key means this object is a type declaration</span>
+}, { typeKey: <span class="hljs-string">'$type'</span> }); <span class="hljs-comment">// '$type' 是这个对象的类型声明的键</span>
 </code></pre>
 <h3 id="validateBeforeSave"><a href="#validateBeforeSave">选项: validateBeforeSave</a></h3>
 
-<p>By default, documents are automatically validated before they are saved to
-the database. This is to prevent saving an invalid document. If you want to
-handle validation manually, and be able to save objects which don&#39;t pass
-validation, you can set <code>validateBeforeSave</code> to false.</p>
+<p>默认情况下，文档会在保存到数据库之前自动验证。
+这将会防止不合法的的文档保存到数据库中。
+如果你想要手动控制验证，并希望不用验证就可以保存数据，
+你可以设置 <code>validateBeforeSave</code> 为 <code>false</code>。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({ name: <span class="hljs-built_in">String</span> });
 schema.set(<span class="hljs-string">'validateBeforeSave'</span>, <span class="hljs-literal">false</span>);
 schema.path(<span class="hljs-string">'name'</span>).validate(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">value</span>) </span>{
@@ -542,32 +543,29 @@ schema.path(<span class="hljs-string">'name'</span>).validate(<span class="hljs-
 <span class="hljs-keyword">var</span> M = mongoose.model(<span class="hljs-string">'Person'</span>, schema);
 <span class="hljs-keyword">var</span> m = <span class="hljs-keyword">new</span> M({ name: <span class="hljs-literal">null</span> });
 m.validate(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
-  <span class="hljs-built_in">console</span>.log(err); <span class="hljs-comment">// Will tell you that null is not allowed.</span>
+  <span class="hljs-built_in">console</span>.log(err); <span class="hljs-comment">// 将会提示null是不允许的</span>
 });
-m.save(); <span class="hljs-comment">// Succeeds despite being invalid</span>
+m.save(); <span class="hljs-comment">// 尽管值不合法，但是保存仍然是成功的</span>
 </code></pre>
 <h3 id="versionKey"><a href="#versionKey">选项: versionKey</a></h3>
 
-<p>The <code>versionKey</code> is a property set on each document when first created by
-Mongoose. This keys value contains the internal
-<a href="http://aaronheckmann.tumblr.com/post/48943525537/mongoose-v3-part-1-versioning">revision</a>
-of the document. The <code>versionKey</code> option is a string that represents the
-path to use for versioning. The default is <code>__v</code>. If this conflicts with
-your application you can configure as such:</p>
+<p>第一次通过Mongoose创建的文档，都会被设置一个 <code>versionKey</code> 属性。
+这个属性值包含内部文档的<a href="http://aaronheckmann.tumblr.com/post/48943525537/mongoose-v3-part-1-versioning">revision</a>。
+<code>versionKey</code>选项是一个用于版本控制，正在使用路径的字符串，默认为 <code>__v</code>。
+如果你的应用有冲突，你可以这样配置：</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({ name: <span class="hljs-string">'string'</span> });
 <span class="hljs-keyword">var</span> Thing = mongoose.model(<span class="hljs-string">'Thing'</span>, schema);
 <span class="hljs-keyword">var</span> thing = <span class="hljs-keyword">new</span> Thing({ name: <span class="hljs-string">'mongoose v3'</span> });
 thing.save(); <span class="hljs-comment">// { __v: 0, name: 'mongoose v3' }</span>
 
-<span class="hljs-comment">// customized versionKey</span>
+<span class="hljs-comment">// 自定义 versionKey</span>
 <span class="hljs-keyword">new</span> Schema({..}, { versionKey: <span class="hljs-string">'_somethingElse'</span> })
 <span class="hljs-keyword">var</span> Thing = mongoose.model(<span class="hljs-string">'Thing'</span>, schema);
 <span class="hljs-keyword">var</span> thing = <span class="hljs-keyword">new</span> Thing({ name: <span class="hljs-string">'mongoose v3'</span> });
 thing.save(); <span class="hljs-comment">// { _somethingElse: 0, name: 'mongoose v3' }</span>
 </code></pre>
-<p>Document versioning can also be disabled by setting the <code>versionKey</code> to
-<code>false</code>.
-<em>DO NOT disable versioning unless you <a href="http://aaronheckmann.tumblr.com/post/48943525537/mongoose-v3-part-1-versioning">know what you are doing</a>.</em></p>
+<p>文档版本控制也可以通过将 <code>versionKey</code> 设置为 <code>false</code> 来禁用。</p>
+<p><em>不要禁用版本控制，除非你知道<a href="http://aaronheckmann.tumblr.com/post/48943525537/mongoose-v3-part-1-versioning">你正在做什么</a>。</em></p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">new</span> Schema({..}, { versionKey: <span class="hljs-literal">false</span> });
 <span class="hljs-keyword">var</span> Thing = mongoose.model(<span class="hljs-string">'Thing'</span>, schema);
 <span class="hljs-keyword">var</span> thing = <span class="hljs-keyword">new</span> Thing({ name: <span class="hljs-string">'no versioning please'</span> });
@@ -575,8 +573,9 @@ thing.save(); <span class="hljs-comment">// { name: 'no versioning please' }</sp
 </code></pre>
 <h3 id="collation"><a href="#collation">选项: collation</a></h3>
 
-<p>Sets a default <a href="https://docs.mongodb.com/manual/reference/collation/">collation</a>
-for every query and aggregation. <a href="http://thecodebarbarian.com/a-nodejs-perspective-on-mongodb-34-collations">Here&#39;s a beginner-friendly overview of collations</a>.</p>
+<p>为每个查询（query）和聚合（aggregation）设置一个默认的
+<a href="https://docs.mongodb.com/manual/reference/collation/">collation</a>
+这里是一个对新手友好的 collation 概述。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({
   name: <span class="hljs-built_in">String</span>
 }, { collation: { locale: <span class="hljs-string">'en_US'</span>, strength: <span class="hljs-number">1</span> } });
@@ -588,58 +587,58 @@ MyModel.create([{ name: <span class="hljs-string">'val'</span> }, { name: <span 
     <span class="hljs-keyword">return</span> MyModel.find({ name: <span class="hljs-string">'val'</span> });
   }).
   then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">docs</span>) </span>{
-    <span class="hljs-comment">// `docs` will contain both docs, because `strength: 1` means</span>
-    <span class="hljs-comment">// MongoDB will ignore case when matching.</span>
+    <span class="hljs-comment">// 两个文档，`docs` 都将包含, 因为 `strength: 1` 意味着</span>
+    <span class="hljs-comment">// MongoDB 在匹配时将忽略大小写。</span>
   });
 </code></pre>
 <h3 id="skipVersioning"><a href="#skipVersioning">选项: skipVersioning</a></h3>
 
-<p><code>skipVersioning</code> allows excluding paths from versioning (i.e., the internal
-revision will not be incremented even if these paths are updated). DO NOT
-do this unless you know what you&#39;re doing. For sub-documents, include this
-on the parent document using the fully qualified path.</p>
+<p><code>skipVersioning</code>允许从版本控制中移除路径信息（也就是说，尽管路径发生变化，内部版本也不会增加）。
+除非你知道你在做什么，否则请不要这么做。
+对于子文档，请使用完整路径在父文档中添加。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">new</span> Schema({..}, { skipVersioning: { dontVersionMe: <span class="hljs-literal">true</span> } });
 thing.dontVersionMe.push(<span class="hljs-string">'hey'</span>);
-thing.save(); <span class="hljs-comment">// version is not incremented</span>
+thing.save(); <span class="hljs-comment">// version 没有增加</span>
 </code></pre>
 <h3 id="timestamps"><a href="#timestamps">选项: timestamps</a></h3>
 
-<p>If set <code>timestamps</code>, mongoose assigns <code>createdAt</code> and <code>updatedAt</code> fields to
-your schema, the type assigned is <a href="./api.html#schema-date-js">Date</a>.</p>
-<p>By default, the name of two fields are <code>createdAt</code> and <code>updatedAt</code>, customize
-the field name by setting <code>timestamps.createdAt</code> and <code>timestamps.updatedAt</code>.</p>
+<p>如果设置了<code>timestamps</code>属性，Mongoose将会在你的schema中，
+分配 <code>createdAt</code> 和 <code>updatedAt</code> 字段，
+这两个值得类型为 <a href="./api.html#schema-date-js">Date</a>。</p>
+<p>默认情况下，这两个字段的名称为 <code>createdAt</code> 和 <code>updatedAt</code>，
+可以通过设置 <code>timestamps.createdAt</code> 和 <code>timestamps.updatedAt</code>的值，来自定义字段名。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> thingSchema = <span class="hljs-keyword">new</span> Schema({..}, { timestamps: { createdAt: <span class="hljs-string">'created_at'</span> } });
 <span class="hljs-keyword">var</span> Thing = mongoose.model(<span class="hljs-string">'Thing'</span>, thingSchema);
 <span class="hljs-keyword">var</span> thing = <span class="hljs-keyword">new</span> Thing();
-thing.save(); <span class="hljs-comment">// `created_at` &amp; `updatedAt` will be included</span>
+thing.save(); <span class="hljs-comment">// `created_at` &amp; `updatedAt`将会被添加</span>
 </code></pre>
 <h3 id="useNestedStrict"><a href="#useNestedStrict">选项: useNestedStrict</a></h3>
 
-<p>In mongoose 4, <code>update()</code> and <code>findOneAndUpdate()</code> only check the top-level
-schema&#39;s strict mode setting.</p>
+<p>在Mongoose 4中，<code>update()</code> 和 <code>findOneAndUpdate()</code>
+只会检查顶级schema的严格模式的配置。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> childSchema = <span class="hljs-keyword">new</span> Schema({}, { strict: <span class="hljs-literal">false</span> });
 <span class="hljs-keyword">var</span> parentSchema = <span class="hljs-keyword">new</span> Schema({ child: childSchema }, { strict: <span class="hljs-string">'throw'</span> });
 <span class="hljs-keyword">var</span> Parent = mongoose.model(<span class="hljs-string">'Parent'</span>, parentSchema);
 Parent.update({}, { <span class="hljs-string">'child.name'</span>: <span class="hljs-string">'Luke Skywalker'</span> }, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error</span>) </span>{
-  <span class="hljs-comment">// Error because parentSchema has `strict: throw`, even though</span>
-  <span class="hljs-comment">// `childSchema` has `strict: false`</span>
+  <span class="hljs-comment">// 因为parentSchema有`strict: throw`属性</span>
+  <span class="hljs-comment">// 而且`childSchema` 有 `strict: false` 属性，所以会报错。</span>
 });
 
 <span class="hljs-keyword">var</span> update = { <span class="hljs-string">'child.name'</span>: <span class="hljs-string">'Luke Skywalker'</span> };
 <span class="hljs-keyword">var</span> opts = { strict: <span class="hljs-literal">false</span> };
 Parent.update({}, update, opts, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error</span>) </span>{
-  <span class="hljs-comment">// This works because passing `strict: false` to `update()` overwrites</span>
-  <span class="hljs-comment">// the parent schema.</span>
+  <span class="hljs-comment">// 因为传递了 `strict: false` 参数给 `update()`，</span>
+  <span class="hljs-comment">// 覆盖了父 schema。</span>
 });
 </code></pre>
-<p>If you set <code>useNestedStrict</code> to true, mongoose will use the child schema&#39;s
-<code>strict</code> option for casting updates.</p>
+<p>如果你设置 <code>useNestedStrict</code> 为 <code>true</code>，
+mongoose更新时，将会使用子schema的 <code>strict</code> 配置。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> childSchema = <span class="hljs-keyword">new</span> Schema({}, { strict: <span class="hljs-literal">false</span> });
 <span class="hljs-keyword">var</span> parentSchema = <span class="hljs-keyword">new</span> Schema({ child: childSchema },
   { strict: <span class="hljs-string">'throw'</span>, useNestedStrict: <span class="hljs-literal">true</span> });
 <span class="hljs-keyword">var</span> Parent = mongoose.model(<span class="hljs-string">'Parent'</span>, parentSchema);
 Parent.update({}, { <span class="hljs-string">'child.name'</span>: <span class="hljs-string">'Luke Skywalker'</span> }, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error</span>) </span>{
-  <span class="hljs-comment">// Works!</span>
+  <span class="hljs-comment">// 会运行</span>
 });
 </code></pre>
 <h3 id="plugins"><a href="#plugins">插件化</a></h3>

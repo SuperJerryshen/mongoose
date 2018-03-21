@@ -519,93 +519,92 @@ block content
 
     <h3 id="strict">选项: strict</h3>
 
-    The strict option, (enabled by default), ensures that values passed to our
-    model constructor that were not specified in our schema do not get saved to
-    the db.
+    `strict`选项（默认打开）确保传入我们model构造函数中，
+    但没在schema中定义的值，不会保存到数据库中。
 
     ```javascript
     var thingSchema = new Schema({..})
     var Thing = mongoose.model('Thing', thingSchema);
     var thing = new Thing({ iAmNotInTheSchema: true });
-    thing.save(); // iAmNotInTheSchema is not saved to the db
+    thing.save(); // iAmNotInTheSchema 不会保存到数据库中
 
-    // set to false..
+    // 设置为 false
     var thingSchema = new Schema({..}, { strict: false });
     var thing = new Thing({ iAmNotInTheSchema: true });
-    thing.save(); // iAmNotInTheSchema is now saved to the db!!
+    thing.save(); // 现在 iAmNotInTheSchema 可以保存到数据库
     ```
 
-    This also affects the use of `doc.set()` to set a property value.
+    同样会影响 `doc.set()` 设置的属性值。
 
     ```javascript
     var thingSchema = new Schema({..})
     var Thing = mongoose.model('Thing', thingSchema);
     var thing = new Thing;
     thing.set('iAmNotInTheSchema', true);
-    thing.save(); // iAmNotInTheSchema is not saved to the db
+    thing.save(); // iAmNotInTheSchema 没有保存到数据库
     ```
 
+    通过传递第二个布尔值属性，在model实例层，值可能会被覆盖。
     This value can be overridden at the model instance level by passing a second
     boolean argument:
 
     ```javascript
     var Thing = mongoose.model('Thing');
-    var thing = new Thing(doc, true);  // enables strict mode
-    var thing = new Thing(doc, false); // disables strict mode
+    var thing = new Thing(doc, true);  // 打开 strict 模式
+    var thing = new Thing(doc, false); // 关闭 strict 模式
     ```
 
-    The `strict` option may also be set to `"throw"` which will cause errors
-    to be produced instead of dropping the bad data.
+    `strict` 选项页可以设置为 `throw`。
+    此时如果设置了非法的值，将会报错。
 
-    _NOTE: Any key/val set on the instance that does not exist in your schema is always ignored, regardless of schema option._
+    _注意：如果不设置schema选项，则任何设置在实例上，并且在schema上不存在的键值对总会被忽略。_
 
     ```javascript
     var thingSchema = new Schema({..})
     var Thing = mongoose.model('Thing', thingSchema);
     var thing = new Thing;
     thing.iAmNotInTheSchema = true;
-    thing.save(); // iAmNotInTheSchema is never saved to the db
+    thing.save(); // iAmNotInTheSchema 永远不会存储到数据库中
     ```
 
     <h3 id="strictQuery">选项: strictQuery</h3>
 
-    For backwards compatibility, the `strict` option does **not** apply to
-    the `filter` parameter for queries.
+    为了向下兼容，对于`queries`，设置了`strict` 选项，将**不能**用于参数过滤。
 
     ```javascript
     const mySchema = new Schema({ field: Number }, { strict: true });
     const MyModel = mongoose.model('Test', mySchema);
 
-    // Mongoose will **not** filter out `notInSchema: 1`, despite `strict: true`
+    // Mongoose 将 **不会** 过滤出 `notInSchema: 1` 的文档, 尽管 `strict: true`
     MyModel.find({ notInSchema: 1 });
     ```
 
-    The `strict` option does apply to updates.
+    `strict` 选项只用户数据更新。
 
     ```javascript
-    // Mongoose will strip out `notInSchema` from the update if `strict` is
-    // not `false`
+    // 如果 `strict` 的值不是 `false`
+    // 则 Mongoose 将会从更新中剔除 `notInSchema` 的值
     MyModel.updateMany({}, { $set: { notInSchema: 1 } });
     ```
 
-    Mongoose has a separate `strictQuery` option to toggle strict mode for
-    the `filter` parameter to queries.
+    Mongoose 有一个单独的 `strictQuery` 选项来切换严格模式是否可以进行过滤查询。
 
     ```javascript
     const mySchema = new Schema({ field: Number }, {
       strict: true,
-      strictQuery: true // Turn on strict mode for query filters
+      strictQuery: true // 打开严格模式下的过滤查询
     });
     const MyModel = mongoose.model('Test', mySchema);
 
-    // Mongoose will strip out `notInSchema: 1` because `strictQuery` is `true`
+    // 因为 `strictQuery` 的值为 `true`
+    // 所以 Mongoose 将会剔除 `notInSchema: 1` 的值
     MyModel.find({ notInSchema: 1 });
     ```
 
     <h3 id="toJSON"><a href="#toJSON">选项: toJSON</a></h3>
 
-    Exactly the same as the [toObject](#toObject) option but only applies when
-    the documents `toJSON` method is called.
+    准确的说，和 [toObject](#toObject) 选项一样，
+    但是只适用于文档的 `toJSON` 方法被调用的时候。
 
     ```javascript
     var schema = new Schema({ name: String });
@@ -617,11 +616,11 @@ block content
     var m = new M({ name: 'Max Headroom' });
     console.log(m.toObject()); // { _id: 504e0cd7dd992d9be2f20b6f, name: 'Max Headroom' }
     console.log(m.toJSON()); // { _id: 504e0cd7dd992d9be2f20b6f, name: 'Max Headroom is my name' }
-    // since we know toJSON is called whenever a js object is stringified:
+    // 只要toJSON被调用，js对象无论何时都会被字符串化:
     console.log(JSON.stringify(m)); // { "_id": "504e0cd7dd992d9be2f20b6f", "name": "Max Headroom is my name" }
     ```
 
-    To see all available `toJSON/toObject` options, read [this](/docs/api.html#document_Document-toObject).
+    想要了解所有支持`toJSON/toObject`的选项，请查看 [这里](/docs/api.html#document_Document-toObject)。
 
     <h3 id="toObject"><a href="#toObject">选项: toObject</a></h3>
 
@@ -645,37 +644,39 @@ block content
     console.log(m); // { _id: 504e0cd7dd992d9be2f20b6f, name: 'Max Headroom is my name' }
     ```
 
-    To see all available `toObject` options, read [this](/docs/api.html#document_Document-toObject).
+    查看所有可用的 `toObject` 选项，请看[这里](/docs/api.html#document_Document-toObject)。
 
     <h3 id="typeKey"><a href="#typeKey">选项: typeKey</a></h3>
 
+    默认情况下，如果在schema中的对象如果有一个 `type` 的键，
+    则 mongoose 会将其做为类型声明来处理。
     By default, if you have an object with key 'type' in your schema, mongoose
     will interpret it as a type declaration.
 
     ```javascript
-    // Mongoose interprets this as 'loc is a String'
+    // Mongoose 将会认为 'loc' 是一个 'String'
     var schema = new Schema({ loc: { type: String, coordinates: [Number] } });
     ```
 
-    However, for applications like [geoJSON](http://docs.mongodb.org/manual/reference/geojson/),
-    the 'type' property is important. If you want to control which key mongoose
-    uses to find type declarations, set the 'typeKey' schema option.
+    对于像 [geoJSON](http://docs.mongodb.org/manual/reference/geojson/) 
+    这样的应用，`type` 属性将会非常重要。
+    你可以通过设置 'typeKey' 属性值，来找到 mongoose 正在使用的那个键的类型声明。
 
     ```javascript
     var schema = new Schema({
-      // Mongoose interpets this as 'loc is an object with 2 keys, type and coordinates'
+      // Mongoose 将其解释为 'loc 是一个拥有两个键(type 和 coordinates)的对象'
       loc: { type: String, coordinates: [Number] },
-      // Mongoose interprets this as 'name is a String'
+      // Mongoose 将其解释为 'name 是一个 String'
       name: { $type: String }
-    }, { typeKey: '$type' }); // A '$type' key means this object is a type declaration
+    }, { typeKey: '$type' }); // '$type' 是这个对象的类型声明的键
     ```
 
     <h3 id="validateBeforeSave"><a href="#validateBeforeSave">选项: validateBeforeSave</a></h3>
 
-    By default, documents are automatically validated before they are saved to
-    the database. This is to prevent saving an invalid document. If you want to
-    handle validation manually, and be able to save objects which don't pass
-    validation, you can set `validateBeforeSave` to false.
+    默认情况下，文档会在保存到数据库之前自动验证。
+    这将会防止不合法的的文档保存到数据库中。
+    如果你想要手动控制验证，并希望不用验证就可以保存数据，
+    你可以设置 `validateBeforeSave` 为 `false`。
 
     ```javascript
     var schema = new Schema({ name: String });
@@ -686,19 +687,17 @@ block content
     var M = mongoose.model('Person', schema);
     var m = new M({ name: null });
     m.validate(function(err) {
-      console.log(err); // Will tell you that null is not allowed.
+      console.log(err); // 将会提示null是不允许的
     });
-    m.save(); // Succeeds despite being invalid
+    m.save(); // 尽管值不合法，但是保存仍然是成功的
     ```
 
     <h3 id="versionKey"><a href="#versionKey">选项: versionKey</a></h3>
 
-    The `versionKey` is a property set on each document when first created by
-    Mongoose. This keys value contains the internal
-    [revision](http://aaronheckmann.tumblr.com/post/48943525537/mongoose-v3-part-1-versioning)
-    of the document. The `versionKey` option is a string that represents the
-    path to use for versioning. The default is `__v`. If this conflicts with
-    your application you can configure as such:
+    第一次通过Mongoose创建的文档，都会被设置一个 `versionKey` 属性。
+    这个属性值包含内部文档的[revision](http://aaronheckmann.tumblr.com/post/48943525537/mongoose-v3-part-1-versioning)。
+    `versionKey`选项是一个用于版本控制，正在使用路径的字符串，默认为 `__v`。
+    如果你的应用有冲突，你可以这样配置：
 
     ```javascript
     var schema = new Schema({ name: 'string' });
@@ -706,16 +705,16 @@ block content
     var thing = new Thing({ name: 'mongoose v3' });
     thing.save(); // { __v: 0, name: 'mongoose v3' }
 
-    // customized versionKey
+    // 自定义 versionKey
     new Schema({..}, { versionKey: '_somethingElse' })
     var Thing = mongoose.model('Thing', schema);
     var thing = new Thing({ name: 'mongoose v3' });
     thing.save(); // { _somethingElse: 0, name: 'mongoose v3' }
     ```
 
-    Document versioning can also be disabled by setting the `versionKey` to
-    `false`.
-    _DO NOT disable versioning unless you [know what you are doing](http://aaronheckmann.tumblr.com/post/48943525537/mongoose-v3-part-1-versioning)._
+    文档版本控制也可以通过将 `versionKey` 设置为 `false` 来禁用。
+
+    _不要禁用版本控制，除非你知道[你正在做什么](http://aaronheckmann.tumblr.com/post/48943525537/mongoose-v3-part-1-versioning)。_
 
     ```javascript
     new Schema({..}, { versionKey: false });
@@ -726,8 +725,9 @@ block content
 
     <h3 id="collation"><a href="#collation">选项: collation</a></h3>
 
-    Sets a default [collation](https://docs.mongodb.com/manual/reference/collation/)
-    for every query and aggregation. [Here's a beginner-friendly overview of collations](http://thecodebarbarian.com/a-nodejs-perspective-on-mongodb-34-collations).
+    为每个查询（query）和聚合（aggregation）设置一个默认的
+    [collation](https://docs.mongodb.com/manual/reference/collation/)
+    这里是一个对新手友好的 collation 概述。
 
     ```javascript
     var schema = new Schema({
@@ -741,63 +741,63 @@ block content
         return MyModel.find({ name: 'val' });
       }).
       then(function(docs) {
-        // `docs` will contain both docs, because `strength: 1` means
-        // MongoDB will ignore case when matching.
+        // 两个文档，`docs` 都将包含, 因为 `strength: 1` 意味着
+        // MongoDB 在匹配时将忽略大小写。
       });
     ```
 
     <h3 id="skipVersioning"><a href="#skipVersioning">选项: skipVersioning</a></h3>
 
-    `skipVersioning` allows excluding paths from versioning (i.e., the internal
-    revision will not be incremented even if these paths are updated). DO NOT
-    do this unless you know what you're doing. For sub-documents, include this
-    on the parent document using the fully qualified path.
+    `skipVersioning`允许从版本控制中移除路径信息（也就是说，尽管路径发生变化，内部版本也不会增加）。
+    除非你知道你在做什么，否则请不要这么做。
+    对于子文档，请使用完整路径在父文档中添加。
 
     ```javascript
     new Schema({..}, { skipVersioning: { dontVersionMe: true } });
     thing.dontVersionMe.push('hey');
-    thing.save(); // version is not incremented
+    thing.save(); // version 没有增加
     ```
 
     <h3 id="timestamps"><a href="#timestamps">选项: timestamps</a></h3>
 
-    If set `timestamps`, mongoose assigns `createdAt` and `updatedAt` fields to
-    your schema, the type assigned is [Date](./api.html#schema-date-js).
+    如果设置了`timestamps`属性，Mongoose将会在你的schema中，
+    分配 `createdAt` 和 `updatedAt` 字段，
+    这两个值得类型为 [Date](./api.html#schema-date-js)。
 
-    By default, the name of two fields are `createdAt` and `updatedAt`, customize
-    the field name by setting `timestamps.createdAt` and `timestamps.updatedAt`.
+    默认情况下，这两个字段的名称为 `createdAt` 和 `updatedAt`，
+    可以通过设置 `timestamps.createdAt` 和 `timestamps.updatedAt`的值，来自定义字段名。
 
     ```javascript
     var thingSchema = new Schema({..}, { timestamps: { createdAt: 'created_at' } });
     var Thing = mongoose.model('Thing', thingSchema);
     var thing = new Thing();
-    thing.save(); // `created_at` & `updatedAt` will be included
+    thing.save(); // `created_at` & `updatedAt`将会被添加
     ```
 
     <h3 id="useNestedStrict"><a href="#useNestedStrict">选项: useNestedStrict</a></h3>
 
-    In mongoose 4, `update()` and `findOneAndUpdate()` only check the top-level
-    schema's strict mode setting.
+    在Mongoose 4中，`update()` 和 `findOneAndUpdate()`
+    只会检查顶级schema的严格模式的配置。
 
     ```javascript
     var childSchema = new Schema({}, { strict: false });
     var parentSchema = new Schema({ child: childSchema }, { strict: 'throw' });
     var Parent = mongoose.model('Parent', parentSchema);
     Parent.update({}, { 'child.name': 'Luke Skywalker' }, function(error) {
-      // Error because parentSchema has `strict: throw`, even though
-      // `childSchema` has `strict: false`
+      // 因为parentSchema有`strict: throw`属性
+      // 而且`childSchema` 有 `strict: false` 属性，所以会报错。
     });
 
     var update = { 'child.name': 'Luke Skywalker' };
     var opts = { strict: false };
     Parent.update({}, update, opts, function(error) {
-      // This works because passing `strict: false` to `update()` overwrites
-      // the parent schema.
+      // 因为传递了 `strict: false` 参数给 `update()`，
+      // 覆盖了父 schema。
     });
     ```
 
-    If you set `useNestedStrict` to true, mongoose will use the child schema's
-    `strict` option for casting updates.
+    如果你设置 `useNestedStrict` 为 `true`，
+    mongoose更新时，将会使用子schema的 `strict` 配置。
 
     ```javascript
     var childSchema = new Schema({}, { strict: false });
@@ -805,7 +805,7 @@ block content
       { strict: 'throw', useNestedStrict: true });
     var Parent = mongoose.model('Parent', parentSchema);
     Parent.update({}, { 'child.name': 'Luke Skywalker' }, function(error) {
-      // Works!
+      // 会运行
     });
     ```
 
