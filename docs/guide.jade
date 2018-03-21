@@ -624,14 +624,15 @@ block content
 
     <h3 id="toObject"><a href="#toObject">选项: toObject</a></h3>
 
-    Documents have a [toObject](/docs/api.html#document_Document-toObject) method
-    which converts the mongoose document into a plain javascript object. This
-    method accepts a few options. Instead of applying these options on a
-    per-document basis we may declare the options here and have it applied to
-    all of this schemas documents by default.
+    Document 有一个 [toObject](/docs/api.html#document_Document-toObject) 方法，
+    它可以将mongoose文档转换一个纯js对象。
+    可以向这个方法传递几个参数。
+    为了代替在每一个文档上使用配置，
+    我们可以在这里声明配置，
+    这样就可以默认应用于所有schema。
 
-    To have all virtuals show up in your `console.log` output, set the
-    `toObject` option to `{ getters: true }`:
+    通过设置 `toObject` 的配置 `{ getters: true }`，
+    可以让所有的虚拟属性在你的 `console.log` 输出中展示：
 
     ```javascript
     var schema = new Schema({ name: String });
