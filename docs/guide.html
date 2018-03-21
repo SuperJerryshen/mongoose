@@ -493,13 +493,14 @@ schema.set(<span class="hljs-string">'toJSON'</span>, { getters: <span class="hl
 <p>想要了解所有支持<code>toJSON/toObject</code>的选项，请查看 <a href="/docs/api.html#document_Document-toObject">这里</a>。</p>
 <h3 id="toObject"><a href="#toObject">选项: toObject</a></h3>
 
-<p>Documents have a <a href="/docs/api.html#document_Document-toObject">toObject</a> method
-which converts the mongoose document into a plain javascript object. This
-method accepts a few options. Instead of applying these options on a
-per-document basis we may declare the options here and have it applied to
-all of this schemas documents by default.</p>
-<p>To have all virtuals show up in your <code>console.log</code> output, set the
-<code>toObject</code> option to <code>{ getters: true }</code>:</p>
+<p>Document 有一个 <a href="/docs/api.html#document_Document-toObject">toObject</a> 方法，
+它可以将mongoose文档转换一个纯js对象。
+可以向这个方法传递几个参数。
+为了代替在每一个文档上使用配置，
+我们可以在这里声明配置，
+这样就可以默认应用于所有schema。</p>
+<p>通过设置 <code>toObject</code> 的配置 <code>{ getters: true }</code>，
+可以让所有的虚拟属性在你的 <code>console.log</code> 输出中展示：</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({ name: <span class="hljs-built_in">String</span> });
 schema.path(<span class="hljs-string">'name'</span>).get(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">v</span>) </span>{
   <span class="hljs-keyword">return</span> v + <span class="hljs-string">' is my name'</span>;
