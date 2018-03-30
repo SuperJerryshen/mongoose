@@ -51,7 +51,7 @@ block content
       }
     })
 
-    // example use
+    // 使用案例
 
     var Thing = mongoose.model('Thing', schema);
 
@@ -74,46 +74,45 @@ block content
     m.save(callback);
     ```
 
-    <h3 id="schematype-options"><a href="#schematype-options">SchemaType Options</a></h3>
+    <h3 id="schematype-options"><a href="#schematype-options">SchemaType 配置</a></h3>
 
-    You can declare a schema type using the type directly, or an object with
-    a `type` property.
+    你可以直接用`type`或者带有`type`属性的对象，来声明一个`schema`。
 
     ```javascript
     var schema1 = new Schema({
-      test: String // `test` is a path of type String
+      test: String // `test`是获取type属性String的一个方式
     });
 
     var schema2 = new Schema({
-      test: { type: String } // `test` is a path of type string
+      test: { type: String } // `test`是获取type属性String的一个方式
     });
     ```
 
-    In addition to the type property, you can specify additional properties
-    for a path. For example, if you want to lowercase a string before saving:
+    对于 `type` 属性，你可以向一个字段添加额外的属性。
+    例如，如果你想在保存前让字符串小写：
 
     ```javascript
     var schema2 = new Schema({
       test: {
         type: String,
-        lowercase: true // Always convert `test` to lowercase
+        lowercase: true // 总会转换 `test` 为小写形式
       }
     });
     ```
 
-    The `lowercase` property only works for strings. There are certain options
-    which apply for all schema types, and some that apply for specific schema
-    types.
+    `lowercase` 属性只对于字符串才有作用。
+    有一些适用于所有schema类型的选项，
+    而有一些只适用特定的schema类型。
 
-    <h5>All Schema Types</h5>
+    <h5>所有的 `Schema` 类型</h5>
 
-    * `required`: boolean or function, if true adds a [required validator](./validation.html#built-in-validators) for this property
-    * `default`: Any or function, sets a default value for the path. If the value is a function, the return value of the function is used as the default.
-    * `select`: boolean, specifies default [projections](https://docs.mongodb.com/manual/tutorial/project-fields-from-query-results/) for queries
-    * `validate`: function, adds a [validator function](./validation.html#built-in-validators) for this property
-    * `get`: function, defines a custom getter for this property using [`Object.defineProperty()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty).
-    * `set`: function, defines a custom setter for this property using [`Object.defineProperty()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty).
-    * `alias`: string, mongoose >= 4.10.0 only. Defines a [virtual](./guide.html#virtuals) with the given name that gets/sets this path.
+    * `required`: boolean | function, `true` 时会为这个属性添加一个[required validator](./validation.html#built-in-validators)。
+    * `default`: Any | function, 默认值。如果值为 `function`，返回的值将用于默认值。
+    * `select`: boolean, 对于query特定的默认 [映射（projections）](https://docs.mongodb.com/manual/tutorial/project-fields-from-query-results/)。
+    * `validate`: function, 为这个属性添加一个 [validator 函数](./validation.html#built-in-validators)。
+    * `get`: function, 利用[`Object.defineProperty()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty)为该属性自定义一个getter。
+    * `set`: function, 使用[`Object.defineProperty()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty)为该属性定义一个setter。
+    * `alias`: string, 只适用于 `mongoose >= 4.10.0` 的版本。 即别名，定义一个[虚拟属性（virtual）](./guide.html#virtuals)来获取指定路径的值。
 
     ```javascript
     var numberSchema = new Schema({
@@ -136,48 +135,48 @@ block content
     doc.i; // 3
     ```
 
-    <h5>Indexes</h5>
+    <h5>索引（Indexes）</h5>
 
-    You can also define [MongoDB indexes](https://docs.mongodb.com/manual/indexes/)
-    using schema type options.
+    你可以使用schema类型的配置来定义[MongoDB 索引](https://docs.mongodb.com/manual/indexes/)。
 
-    * `index`: boolean, whether to define an [index](https://docs.mongodb.com/manual/indexes/) on this property.
-    * `unique`: boolean, whether to define a [unique index](https://docs.mongodb.com/manual/core/index-unique/) on this property.
-    * `sparse`: boolean, whether to define a [sparse index](https://docs.mongodb.com/manual/core/index-sparse/) on this property.
+    * `index`: boolean，是否在该属性上定义 [index](https://docs.mongodb.com/manual/indexes/)。
+    * `unique`: boolean，是否在该属性上定义 [unique index](https://docs.mongodb.com/manual/core/index-unique/)。
+    * `sparse`: boolean，是否在该属性上定义 [sparse index](https://docs.mongodb.com/manual/core/index-sparse/)。
+
     ```javascript
     var schema2 = new Schema({
       test: {
         type: String,
         index: true,
-        unique: true // Unique index. If you specify `unique: true`
-        // specifying `index: true` is optional if you do `unique: true`
+        unique: true // 如果配置`unique: true`，索引为唯一的 
+        // 如果配置了`unique: true`，则`index: true`是可选的
       }
     });
     ```
 
-    <h5>String</h5>
+    <h5>字符串（String）</h5>
 
-    * `lowercase`: boolean, whether to always call `.toLowerCase()` on the value
-    * `uppercase`: boolean, whether to always call `.toUpperCase()` on the value
-    * `trim`: boolean, whether to always call `.trim()` on the value
-    * `match`: RegExp, creates a [validator](./validation.html) that checks if the value matches the given regular expression
-    * `enum`: Array, creates a [validator](./validation.html) that checks if the value is in the given array.
+    * `lowercase`: boolean, 是否对该值总是调用 `.toLowerCase()`。
+    * `uppercase`: boolean, 是否对该值总是调用 `.toUpperCase()`。
+    * `trim`: boolean, 是否对该值总是调用 `.trim()`。
+    * `match`: RegExp, 创建一个 [validator](./validation.html)，根据指定的正则表达式来检查该值。
+    * `enum`: Array, 创建一个 [validator](./validation.html) ，检查该值是否在这个数组中。
 
-    <h5>Number</h5>
+    <h5>数字（Number）</h5>
 
     * `min`: Number, creates a [validator](./validation.html) that checks if the value is greater than or equal to the given minimum.
     * `max`: Number, creates a [validator](./validation.html) that checks if the value is less than or equal to the given maximum.
 
-    <h5>Date</h5>
+    <h5>日期（Date）</h5>
 
     * `min`: Date
     * `max`: Date
 
-    <h3 id="usage-notes"><a href="#usage-notes">Usage notes</a></h3>
+    <h3 id="usage-notes"><a href="#usage-notes">使用注意事项（Usage notes）</a></h3>
 
-    <h4>Dates</h4>
+    <h4>日期（Dates）</h4>
 
-    [Built-in `Date` methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) are [__not__ hooked into](https://github.com/Automattic/mongoose/issues/1598) the mongoose change tracking logic which in English means that if you use a `Date` in your document and modify it with a method like `setMonth()`, mongoose will be unaware of this change and `doc.save()` will not persist this modification. If you must modify `Date` types using built-in methods, tell mongoose about the change with `doc.markModified('pathToYourDate')` before saving.
+    [ `Date` 的内建方法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) are [__not__ hooked into](https://github.com/Automattic/mongoose/issues/1598) the mongoose change tracking logic which in English means that if you use a `Date` in your document and modify it with a method like `setMonth()`, mongoose will be unaware of this change and `doc.save()` will not persist this modification. If you must modify `Date` types using built-in methods, tell mongoose about the change with `doc.markModified('pathToYourDate')` before saving.
 
     ```javascript
     var Assignment = mongoose.model('Assignment', { dueDate: Date });
@@ -190,9 +189,11 @@ block content
     })
     ```
 
-    <h4 id="mixed">Mixed</h4>
+    <h4 id="mixed">混合型（Mixed）</h4>
 
-    An "anything goes" SchemaType, its flexibility comes at a trade-off of it being harder to maintain. Mixed is available either through Schema.Types.Mixed or by passing an empty object literal. The following are equivalent:
+    一种允许任何类型的SchemaType，它的灵活性会带来难以维护的后果。
+    可以通过传入 `Schema.Type.Mixed`或者 `{}`设置混合型。
+    下面几种方式效果是一样的：
 
     ```javascript
     var Any = new Schema({ any: {} });
@@ -200,28 +201,31 @@ block content
     var Any = new Schema({ any: Schema.Types.Mixed });
     ```
 
-    Since it is a schema-less type, you can change the value to anything else you like, but Mongoose loses the ability to auto detect and save those changes. To "tell" Mongoose that the value of a Mixed type has changed, call the
-    `.markModified(path)`
-    method of the document passing the path to the Mixed type you just changed.
+    因为它缺少schema类型，你可以随意改变其值，
+    但是Mongoose将失去自动监测和保存变化的能力。
+    通过调用document的`.markModified(path)`方法，
+    传入你刚刚改变的混合型的path，来告诉Mongoose发生变化后混合型的值。
 
     ```javascript
     person.anything = { x: [3, 4, { y: "changed" }] };
     person.markModified('anything');
-    person.save(); // anything will now get saved
+    person.save(); // 现在anything将会被保存
     ```
 
-    <h4 id="objectids">ObjectIds</h4>
+    <h4 id="objectids">id对象（ObjectIds）</h4>
 
-    To specify a type of ObjectId, use `Schema.Types.ObjectId` in your declaration.
+    在声明中使用 `Schema.Types.ObjectId`，来定义ObjectId类型。
 
     ```javascript
     var mongoose = require('mongoose');
     var ObjectId = mongoose.Schema.Types.ObjectId;
     var Car = new Schema({ driver: ObjectId });
-    // or just Schema.ObjectId for backwards compatibility with v2
+    // 或者为了向下兼容v2版本，可以直接使用 Schema.ObjectId
     ```
 
-    <h4 id="arrays">Arrays</h4>
+    <h4 id="arrays">数组（Arrays）</h4>
+
+    支持创建[SchemaTypes](./api.html#schema_Schema.Types)或[Sub-Documents](./subdocs.html)的数组。
 
     Provide creation of arrays of [SchemaTypes](./api.html#schema_Schema.Types)
     or [Sub-Documents](./subdocs.html).
@@ -233,12 +237,12 @@ block content
       buffers: [Buffer],
       string:  [String],
       numbers: [Number]
-      // ... etc
+      // ... 等等
     });
     ```
 
-    Note: specifying an empty array is equivalent to `Mixed`. The following all create arrays of
-    `Mixed`:
+    注意：指定空数组等同于 `Mixed`。
+    下面所有代码都是创建数组的 `Mixed`：
 
     ```javascript
     var Empty1 = new Schema({ any: [] });
@@ -247,12 +251,14 @@ block content
     var Empty4 = new Schema({ any: [{}] });
     ```
 
-    Arrays implicitly have a default value of `[]` (empty array).
+    数组都会有一个默认值，值为 `[]`（空数组）。
 
     ```javascript
     var Toy = mongoose.model('Test', ToySchema);
     console.log((new Toy()).toys); // []
     ```
+
+    为了覆盖默认值，你需要把默认值设置为 `undefined`
 
     To overwrite this default, you need to set the default value to `undefined`
 
@@ -265,26 +271,24 @@ block content
     });
     ```
 
-    <h3 id="customtypes"><a href="#customtypes">Creating Custom Types</a></h3>
+    <h3 id="customtypes"><a href="#customtypes">创建自定义类型（Creating Custom Types）</a></h3>
 
-    Mongoose can also be extended with custom SchemaTypes. Search the
-    [plugins](http://plugins.mongoosejs.io)
-    site for compatible types like
-    [mongoose-long](https://github.com/aheckmann/mongoose-long),
-    [mongoose-int32](https://github.com/vkarpov15/mongoose-int32),
-    and
-    [other](https://github.com/aheckmann/mongoose-function)
-    [types](https://github.com/OpenifyIt/mongoose-types).
+    Mongoose也可以通过SchemaTypes进行扩展。
+    你可以在[plugins](http://plugins.mongoosejs.io)搜索兼容的类型，
+    比如[mongoose-long](https://github.com/aheckmann/mongoose-long)、
+    [mongoose-int32](https://github.com/vkarpov15/mongoose-int32)、
+    和
+    [其他](https://github.com/aheckmann/mongoose-function)
+    [类型](https://github.com/OpenifyIt/mongoose-types)。
 
-    <h3 id="path"><a href="#path">The `schema.path()` Function</a></h3>
+    <h3 id="path"><a href="#path">`schema.path()`函数</a></h3>
 
-    The `schema.path()` function returns the instantiated schema type for a
-    given path.
+    函数 `schema.path()` 返回指定path的实例化schema。
 
     ```javascript
     var sampleSchema = new Schema({ name: { type: String, required: true } });
     console.log(sampleSchema.path('name'));
-    // Output looks like:
+    // 输出形式如下：
     /**
      * SchemaString {
      *   enumValues: [],
@@ -295,9 +299,9 @@ block content
      */
      ```
 
-    You can use this function to inspect the schema type for a given path,
-    including what validators it has and what the type is.
+    你可以使用这个函数来监视指定path的schema类型，
+    包括它的校验器，以及它的类型。
 
-    <h3 id="next"><a href="#next">Next Up</a></h3>
+    <h3 id="next"><a href="#next">接下来</a></h3>
 
-    Now that we've covered `SchemaTypes`, let's take a look at [Models](/docs/models.html).
+    现在我们已经讲完了 `SchemaTypes`，接下来让我们看一下[Models](/docs/models.html)。

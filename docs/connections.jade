@@ -2,47 +2,45 @@ extends layout
 
 block content
   :markdown
-    <h2><a href="#connections">Connections</a></h2>
+    <h2><a href="#connections">连接（Connections）</a></h2>
 
-    You can connect to MongoDB with the `mongoose.connect()` method.
+    你可以通过`mongoose.connect()`连接MongoDB。
 
     ```javascript
     mongoose.connect('mongodb://localhost/myapp');
     ```
+    至少你要连接到运行在默认端口（27017）的本地 `myapp` 数据库。
+    如果本地连接失败了，可以尝试把 `localhost` 替换为 `127.0.0.1`。
+    如果本地主机名称改变了，就可能会造成问题。
 
-    This is the minimum needed to connect the `myapp` database running locally
-    on the default port (27017). If the local connection fails then try using
-    127.0.0.1 instead of localhost. Sometimes issues may arise when the local
-    hostname has been changed.
-
-    You can also specify several more parameters in the `uri`:
+    你可以在 `uri` 上加入一些更精确的参数：
 
     ```javascript
     mongoose.connect('mongodb://username:password@host:port/database?options...');
     ```
 
-    See the [mongodb connection string spec](http://docs.mongodb.org/manual/reference/connection-string/) for more detail.
+    想要了解更多内容，请查看[mongodb的uri连接配置](http://docs.mongodb.org/manual/reference/connection-string/)。
 
-    <h3 id="buffering"><a href="#buffering">Operation Buffering</a></h3>
+    <h3 id="buffering"><a href="#buffering">操作缓存（Operation Buffering）</a></h3>
 
-    Mongoose lets you start using your models immediately, without waiting for
-    mongoose to establish a connection to MongoDB.
+    不用等待mongoose和MongoDB建立连接，
+    Mongoose 就可以让你迅速地开始使用你的models。
 
     ```javascript
     mongoose.connect('mongodb://localhost/myapp');
     var MyModel = mongoose.model('Test', new Schema({ name: String }));
-    // Works
+    // 有效
     MyModel.findOne(function(error, result) { /* ... */ });
     ```
 
-    That's because mongoose buffers model function calls internally. This
-    buffering is convenient, but also a common source of confusion. Mongoose
-    will *not* throw any errors by default if you use a model without
-    connecting.
+    这是因为mongoose内部会缓存model函数的回调。
+    缓存使用非常方便，但也会造成不少困惑。
+    如果在没有连接数据库的时候使用model，
+    Mongoose默认将 *不会* 抛出任何错误。
 
     ```javascript
     var MyModel = mongoose.model('Test', new Schema({ name: String }));
-    // Will just hang until mongoose successfully connects
+    // 将会挂载，直到mongoose连接成功
     MyModel.findOne(function(error, result) { /* ... */ });
 
     setTimeout(function() {
