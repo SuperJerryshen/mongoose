@@ -31,27 +31,24 @@ setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span
   mongoose.connect(<span class="hljs-string">'mongodb://localhost/myapp'</span>);
 }, <span class="hljs-number">60000</span>);
 </code></pre>
-<p>To disable buffering, turn off the <a href="./guide.html#bufferCommands"><code>bufferCommands</code> option on your schema</a>.
-If you have <code>bufferCommands</code> on and your connection is hanging, try turning
-<code>bufferCommands</code> off to see if you haven&#39;t opened a connection properly.
-You can also disable <code>bufferCommands</code> globally:</p>
+<p>为了禁用缓存，关闭schema上的<a href="./guide.html#bufferCommands"><code>bufferCommands</code>选项</a>。
+如果在连接中已经有<code>bufferCommands</code>，或者你没有正确地打开一个连接，可以尝试关闭<code>bufferCommands</code>。
+你也可以全局禁用<code>bufferCommands</code>：</p>
 <pre><code class="lang-javascript">mongoose.set(<span class="hljs-string">'bufferCommands'</span>, <span class="hljs-literal">false</span>);
 </code></pre>
-<h3 id="options"><a href="#options">Options</a></h3>
+<h3 id="options"><a href="#options">配置(Options)</a></h3>
 
-<p>The <code>connect</code> method also accepts an <code>options</code> object which will be passed
-on to the underlying MongoDB driver.</p>
+<p><code>connect</code>方法接受一个传递到底层MongoDB驱动程序的<code>options</code>对象。</p>
 <pre><code class="lang-javascript">mongoose.connect(uri, options);
 </code></pre>
-<p>A full list of options can be found on the <a href="http://mongodb.github.io/node-mongodb-native/2.2/api/MongoClient.html#connect">MongoDB Node.js driver docs for <code>connect()</code></a>.
-Mongoose passes options to the driver without modification, modulo three
-exceptions that are explained below.</p>
+<p>可以查看<a href="http://mongodb.github.io/node-mongodb-native/2.2/api/MongoClient.html#connect">MongoDB Node.js的<code>connect()</code>驱动文档</a>，来获取所有配置选项的列表。
+Mongoose传递给驱动程序的过程中不会做任何修改，下面将解释三个例外。</p>
 <ul>
-<li><code>bufferCommands</code>    - This is a mongoose-specific option (not passed to the MongoDB driver) that disables <a href="http://mongoosejs.com/docs/faq.html#callback_never_executes">mongoose&#39;s buffering mechanism</a></li>
-<li><code>user</code>/<code>pass</code>       - The username and password for authentication. These options are mongoose-specific, they are equivalent to the MongoDB driver&#39;s <code>auth.user</code> and <code>auth.password</code> options.</li>
-<li><code>autoIndex</code>         - By default, mongoose will automatically build indexes defined in your schema when it connects. This is great for development, but not ideal for large production deployments, because index builds can cause performance degradation. If you set <code>autoIndex</code> to false, mongoose will not automatically build indexes for <strong>any</strong> model associated with this connection.</li>
+<li><code>bufferCommands</code>    - 这是一个mongoose特定的参数(不会传递给MongoDB驱动程序)，这个选项用于禁用<a href="http://mongoosejs.com/docs/faq.html#callback_never_executes">mongoose缓存机制</a></li>
+<li><code>user</code>/<code>pass</code>       - 用于验证的username和password。这些选项是mongoose特定的参数, 他们等同于MongoDB驱动器的 <code>auth.user</code> 和 <code>auth.password</code> 选项。</li>
+<li><code>autoIndex</code>         - 默认情况，mongoose连接时，会在你的schema中自动构建索引， 这对于开发非常赞，但是因为构建索引会导致性能下降，所以对于大型产品的部署不是很理想，如果将 <code>autoIndex</code> 设置为false，对于<strong>任何</strong>关于这个连接的模型，mongoose将不会自动创建索引。</li>
 </ul>
-<p>Below are some of the options that are important for tuning mongoose.</p>
+<p>下面是一些对于mongoose调整非常重要的配置。</p>
 <ul>
 <li><code>autoReconnect</code>     - The underlying MongoDB driver will automatically try to reconnect when it loses connection to MongoDB. Unless you are an extremely advanced user that wants to manage their own connection pool, do <strong>not</strong> set this option to <code>false</code>.</li>
 <li><code>reconnectTries</code>    - If you&#39;re connected to a single server or mongos proxy (as opposed to a replica set), the MongoDB driver will try to reconnect every <code>reconnectInterval</code> milliseconds for <code>reconnectTries</code> times, and give up afterward. When the driver gives up, the mongoose connection emits a <code>reconnectFailed</code> event. This option does nothing for replica set connections.</li>
@@ -63,38 +60,36 @@ exceptions that are explained below.</p>
 <p>Example:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">const</span> options = {
   useMongoClient: <span class="hljs-literal">true</span>,
-  autoIndex: <span class="hljs-literal">false</span>, <span class="hljs-comment">// Don't build indexes</span>
-  reconnectTries: <span class="hljs-built_in">Number</span>.MAX_VALUE, <span class="hljs-comment">// Never stop trying to reconnect</span>
-  reconnectInterval: <span class="hljs-number">500</span>, <span class="hljs-comment">// Reconnect every 500ms</span>
-  poolSize: <span class="hljs-number">10</span>, <span class="hljs-comment">// Maintain up to 10 socket connections</span>
-  <span class="hljs-comment">// If not connected, return errors immediately rather than waiting for reconnect</span>
+  autoIndex: <span class="hljs-literal">false</span>, <span class="hljs-comment">// 不会创建索引</span>
+  reconnectTries: <span class="hljs-built_in">Number</span>.MAX_VALUE, <span class="hljs-comment">// 从不终止重新连接</span>
+  reconnectInterval: <span class="hljs-number">500</span>, <span class="hljs-comment">// 每500ms重连一次</span>
+  poolSize: <span class="hljs-number">10</span>, <span class="hljs-comment">// 维持到10个socket连接</span>
+  <span class="hljs-comment">// 如果没有连接，将立刻返回错误，而不是等待重连</span>
   bufferMaxEntries: <span class="hljs-number">0</span>
 };
 mongoose.connect(uri, options);
 </code></pre>
-<h3 id="callback"><a href="#callback">Callback</a></h3>
+<h3 id="callback"><a href="#callback">回调(Callback)</a></h3>
 
-<p>The <code>connect()</code> function also accepts a callback parameter and returns a
-<a href="./promises.html">promise</a>.</p>
+<p><code>connect()</code>函数同样接收一个回调函数作为参数，并返回一个<a href="./promises.html">promise</a>。</p>
 <pre><code class="lang-javascript">mongoose.connect(uri, options, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error</span>) </span>{
-  <span class="hljs-comment">// Check error in initial connection. There is no 2nd param to the callback.</span>
+  <span class="hljs-comment">// 初次连接检查错误，回调函数无第二个参数</span>
 });
 
-<span class="hljs-comment">// Or using promises</span>
+<span class="hljs-comment">// 或者使用promise</span>
 mongoose.connect(uri, options).then(
   () =&gt; { <span class="hljs-comment">/** ready to use. The `mongoose.connect()` promise resolves to undefined. */</span> },
   err =&gt; { <span class="hljs-comment">/** handle initial connection error */</span> }
 );
 </code></pre>
-<h3 id="connection-string-options"><a href="#connection-string-options">Connection String Options</a></h3>
+<h3 id="connection-string-options"><a href="#connection-string-options">连接的字符串选项(Connection String Options)</a></h3>
 
-<p>You can also specify driver options in your connection string as
-<a href="https://en.wikipedia.org/wiki/Query_string">parameters in the query string</a>
-portion of the URI. This only applies to options passed to the MongoDB
-driver. You <strong>can&#39;t</strong> set Mongoose-specific options like <code>bufferCommands</code>
-in the query string.</p>
+<p>你也可以通过连接的字符串，来配置驱动的参数，
+就像URI中部分<a href="https://en.wikipedia.org/wiki/Query_string">query字符串的参数</a>一样。
+这仅仅适用于传递给MongoDB驱动器的参数。
+你<strong>不能</strong>在query字符串中，设置像<code>bufferCommands</code>这样的Mongoose特定参数。</p>
 <pre><code class="lang-javascript">mongoose.connect(<span class="hljs-string">'mongodb://localhost:27017/test?connectTimeoutMS=1000&amp;bufferCommands=false'</span>);
-<span class="hljs-comment">// The above is equivalent to:</span>
+<span class="hljs-comment">// 等同于：</span>
 mongoose.connect(<span class="hljs-string">'mongodb://localhost:27017/test'</span>, {
   connectTimeoutMS: <span class="hljs-number">1000</span>
   <span class="hljs-comment">// Note that mongoose will **not** pull `bufferCommands` from the query string</span>
