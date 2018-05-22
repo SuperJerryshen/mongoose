@@ -1,19 +1,18 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Mongoose v5.0.10: Middleware</title><link rel="apple-touch-icon" sizes="57x57" href="images/favicon/apple-icon-57x57.png"><link rel="apple-touch-icon" sizes="60x60" href="images/favicon/apple-icon-60x60.png"><link rel="apple-touch-icon" sizes="72x72" href="images/favicon/apple-icon-72x72.png"><link rel="apple-touch-icon" sizes="76x76" href="images/favicon/apple-icon-76x76.png"><link rel="apple-touch-icon" sizes="114x114" href="images/favicon/apple-icon-114x114.png"><link rel="apple-touch-icon" sizes="120x120" href="images/favicon/apple-icon-120x120.png"><link rel="apple-touch-icon" sizes="144x144" href="images/favicon/apple-icon-144x144.png"><link rel="apple-touch-icon" sizes="152x152" href="images/favicon/apple-icon-152x152.png"><link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-icon-180x180.png"><link rel="icon" type="image/png" sizes="192x192" href="images/favicon/android-icon-192x192.png"><link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="96x96" href="images/favicon/favicon-96x96.png"><link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png"><link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans"><link rel="stylesheet" href="/docs/css/github.css"><link rel="stylesheet" href="/docs/css/mongoose5.css"><link rel="apple-touch-icon" sizes="57x57" href="images/favicon/apple-icon-57x57.png"><link rel="apple-touch-icon" sizes="60x60" href="images/favicon/apple-icon-60x60.png"><link rel="apple-touch-icon" sizes="72x72" href="images/favicon/apple-icon-72x72.png"><link rel="apple-touch-icon" sizes="76x76" href="images/favicon/apple-icon-76x76.png"><link rel="apple-touch-icon" sizes="114x114" href="images/favicon/apple-icon-114x114.png"><link rel="apple-touch-icon" sizes="120x120" href="images/favicon/apple-icon-120x120.png"><link rel="apple-touch-icon" sizes="144x144" href="images/favicon/apple-icon-144x144.png"><link rel="apple-touch-icon" sizes="152x152" href="images/favicon/apple-icon-152x152.png"><link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-icon-180x180.png"><link rel="icon" type="image/png" sizes="192x192" href="images/favicon/android-icon-192x192.png"><link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="96x96" href="images/favicon/favicon-96x96.png"><link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png"><link rel="manifest" href="images/favicon/manifest.json"><meta name="msapplication-TileColor" content="#ffffff"><meta name="msapplication-TileImage" content="images/favicon/ms-icon-144x144.png"><meta name="theme-color" content="#ffffff"></head><body><div id="layout"><div id="mobile-menu"><a id="menuLink" href="#menu" class="menu-link"><span></span></a><div id="mobile-logo-container"><a href="/"><img id="logo" src="/docs/images/mongoose5_62x30_transparent.png"><span class="logo-text">mongoose</span></a></div></div><div id="menu"><div class="pure-menu"><div id="logo-container" class="pure-menu-heading"><a href="/"><img id="logo" src="/docs/images/mongoose5_62x30_transparent.png"><span class="logo-text">mongoose</span></a></div><ul class="pure-menu-list"><li class="pure-menu-horizontal pure-menu-item pure-menu-has-children pure-menu-allow-hover version"><a href="#" class="pure-menu-link">版本号 5.0.10</a><ul class="pure-menu-children"><li class="pure-menu-item"><a href="/docs/4.x" class="pure-menu-link">版本号 4.13.11</a></li><li class="pure-menu-item"><a href="/docs/3.8.x" class="pure-menu-link">版本号 3.8.40</a></li></ul></li><li class="pure-menu-item"><a href="/docs/index.html" class="pure-menu-link">快速开始 (Quick Start)</a></li><li class="pure-menu-item"><a href="/docs/guide.html" class="pure-menu-link">模式 (Schemas)</a></li><li class="pure-menu-item sub-item"><a href="/docs/schematypes.html" class="pure-menu-link">模式类型 (SchemaTypes)</a></li><li class="pure-menu-item sub-item"><a href="/docs/connections.html" class="pure-menu-link">连接 (Connections)</a></li><li class="pure-menu-item sub-item"><a href="/docs/models.html" class="pure-menu-link">模型 (Models)</a></li><li class="pure-menu-item sub-item"><a href="/docs/documents.html" class="pure-menu-link">文档 (Documents)</a></li><li class="pure-menu-item sub-item"><a href="/docs/subdocs.html" class="pure-menu-link">子文档 (Subdocuments)</a></li><li class="pure-menu-item sub-item"><a href="/docs/queries.html" class="pure-menu-link">查询 (Queries)</a></li><li class="pure-menu-item sub-item"><a href="/docs/validation.html" class="pure-menu-link">验证 (Validation)</a></li><li class="pure-menu-item sub-item"><a href="/docs/middleware.html" class="pure-menu-link">中间件 (Middleware)</a></li><li class="pure-menu-item sub-item"><a href="/docs/populate.html" class="pure-menu-link">填充 (Populate)</a></li><li class="pure-menu-item sub-item"><a href="/docs/discriminators.html" class="pure-menu-link">鉴别器 (Discriminators)</a></li><li class="pure-menu-item sub-item"><a href="/docs/plugins.html" class="pure-menu-link">插件 (Plugins)</a></li><li class="pure-menu-item sub-item"><a href="/docs/lambda.html" class="pure-menu-link">亚马逊网络服务 (AWS Lambda)</a></li><li class="pure-menu-item"><a href="/docs/api.html" class="pure-menu-link">接口 (API)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Schema" class="pure-menu-link">模式 (Schema)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Connection" class="pure-menu-link">连接 (Connection)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Document" class="pure-menu-link">文档 (Document)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Model" class="pure-menu-link">模型 (Model)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Query" class="pure-menu-link">查询 (Query)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Aggregate" class="pure-menu-link">聚合 (Aggregate)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Schematype" class="pure-menu-link">模式类型 (SchemaType)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Virtualtype" class="pure-menu-link">虚拟类型 (VirtualType)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Error" class="pure-menu-link">错误 (Error)</a></li><li class="pure-menu-item"><a href="/docs/compatibility.html" class="pure-menu-link">版本兼容性</a></li><li class="pure-menu-item"><a href="/docs/faq.html" class="pure-menu-link">常见问题 (FAQ)</a></li><li class="carbon-ad"><script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=mongoosejscom" id="_carbonads_js"></script></li></ul></div></div><div class="container"><div id="content"><h2 id="middleware">Middleware</h2>
-<p>Middleware (also called pre and post <em>hooks</em>) are functions which are passed
-control during execution of asynchronous functions. Middleware is specified
-on the schema level and is useful for writing <a href="./plugins.html">plugins</a>.
-Mongoose 4.x has 4 types
-of middleware: document middleware, model middleware, aggregate middleware, and query middleware.
-Document middleware is supported for the following document functions.
-In document middleware functions, <code>this</code> refers to the document.</p>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Mongoose v5.0.10: Middleware</title><link rel="apple-touch-icon" sizes="57x57" href="images/favicon/apple-icon-57x57.png"><link rel="apple-touch-icon" sizes="60x60" href="images/favicon/apple-icon-60x60.png"><link rel="apple-touch-icon" sizes="72x72" href="images/favicon/apple-icon-72x72.png"><link rel="apple-touch-icon" sizes="76x76" href="images/favicon/apple-icon-76x76.png"><link rel="apple-touch-icon" sizes="114x114" href="images/favicon/apple-icon-114x114.png"><link rel="apple-touch-icon" sizes="120x120" href="images/favicon/apple-icon-120x120.png"><link rel="apple-touch-icon" sizes="144x144" href="images/favicon/apple-icon-144x144.png"><link rel="apple-touch-icon" sizes="152x152" href="images/favicon/apple-icon-152x152.png"><link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-icon-180x180.png"><link rel="icon" type="image/png" sizes="192x192" href="images/favicon/android-icon-192x192.png"><link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="96x96" href="images/favicon/favicon-96x96.png"><link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png"><link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans"><link rel="stylesheet" href="/docs/css/github.css"><link rel="stylesheet" href="/docs/css/mongoose5.css"><link rel="apple-touch-icon" sizes="57x57" href="images/favicon/apple-icon-57x57.png"><link rel="apple-touch-icon" sizes="60x60" href="images/favicon/apple-icon-60x60.png"><link rel="apple-touch-icon" sizes="72x72" href="images/favicon/apple-icon-72x72.png"><link rel="apple-touch-icon" sizes="76x76" href="images/favicon/apple-icon-76x76.png"><link rel="apple-touch-icon" sizes="114x114" href="images/favicon/apple-icon-114x114.png"><link rel="apple-touch-icon" sizes="120x120" href="images/favicon/apple-icon-120x120.png"><link rel="apple-touch-icon" sizes="144x144" href="images/favicon/apple-icon-144x144.png"><link rel="apple-touch-icon" sizes="152x152" href="images/favicon/apple-icon-152x152.png"><link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-icon-180x180.png"><link rel="icon" type="image/png" sizes="192x192" href="images/favicon/android-icon-192x192.png"><link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="96x96" href="images/favicon/favicon-96x96.png"><link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png"><link rel="manifest" href="images/favicon/manifest.json"><meta name="msapplication-TileColor" content="#ffffff"><meta name="msapplication-TileImage" content="images/favicon/ms-icon-144x144.png"><meta name="theme-color" content="#ffffff"></head><body><div id="layout"><div id="mobile-menu"><a id="menuLink" href="#menu" class="menu-link"><span></span></a><div id="mobile-logo-container"><a href="/"><img id="logo" src="/docs/images/mongoose5_62x30_transparent.png"><span class="logo-text">mongoose</span></a></div></div><div id="menu"><div class="pure-menu"><div id="logo-container" class="pure-menu-heading"><a href="/"><img id="logo" src="/docs/images/mongoose5_62x30_transparent.png"><span class="logo-text">mongoose</span></a></div><ul class="pure-menu-list"><li class="pure-menu-horizontal pure-menu-item pure-menu-has-children pure-menu-allow-hover version"><a href="#" class="pure-menu-link">版本号 5.0.10</a><ul class="pure-menu-children"><li class="pure-menu-item"><a href="/docs/4.x" class="pure-menu-link">版本号 4.13.11</a></li><li class="pure-menu-item"><a href="/docs/3.8.x" class="pure-menu-link">版本号 3.8.40</a></li></ul></li><li class="pure-menu-item"><a href="/docs/index.html" class="pure-menu-link">快速开始 (Quick Start)</a></li><li class="pure-menu-item"><a href="/docs/guide.html" class="pure-menu-link">模式 (Schemas)</a></li><li class="pure-menu-item sub-item"><a href="/docs/schematypes.html" class="pure-menu-link">模式类型 (SchemaTypes)</a></li><li class="pure-menu-item sub-item"><a href="/docs/connections.html" class="pure-menu-link">连接 (Connections)</a></li><li class="pure-menu-item sub-item"><a href="/docs/models.html" class="pure-menu-link">模型 (Models)</a></li><li class="pure-menu-item sub-item"><a href="/docs/documents.html" class="pure-menu-link">文档 (Documents)</a></li><li class="pure-menu-item sub-item"><a href="/docs/subdocs.html" class="pure-menu-link">子文档 (Subdocuments)</a></li><li class="pure-menu-item sub-item"><a href="/docs/queries.html" class="pure-menu-link">查询 (Queries)</a></li><li class="pure-menu-item sub-item"><a href="/docs/validation.html" class="pure-menu-link">验证 (Validation)</a></li><li class="pure-menu-item sub-item"><a href="/docs/middleware.html" class="pure-menu-link">中间件 (Middleware)</a></li><li class="pure-menu-item sub-item"><a href="/docs/populate.html" class="pure-menu-link">填充 (Populate)</a></li><li class="pure-menu-item sub-item"><a href="/docs/discriminators.html" class="pure-menu-link">鉴别器 (Discriminators)</a></li><li class="pure-menu-item sub-item"><a href="/docs/plugins.html" class="pure-menu-link">插件 (Plugins)</a></li><li class="pure-menu-item sub-item"><a href="/docs/lambda.html" class="pure-menu-link">亚马逊网络服务 (AWS Lambda)</a></li><li class="pure-menu-item"><a href="/docs/api.html" class="pure-menu-link">接口 (API)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Schema" class="pure-menu-link">模式 (Schema)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Connection" class="pure-menu-link">连接 (Connection)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Document" class="pure-menu-link">文档 (Document)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Model" class="pure-menu-link">模型 (Model)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Query" class="pure-menu-link">查询 (Query)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Aggregate" class="pure-menu-link">聚合 (Aggregate)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Schematype" class="pure-menu-link">模式类型 (SchemaType)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Virtualtype" class="pure-menu-link">虚拟类型 (VirtualType)</a></li><li class="pure-menu-item sub-item"><a href="/docs/api.html#Error" class="pure-menu-link">错误 (Error)</a></li><li class="pure-menu-item"><a href="/docs/compatibility.html" class="pure-menu-link">版本兼容性</a></li><li class="pure-menu-item"><a href="/docs/faq.html" class="pure-menu-link">常见问题 (FAQ)</a></li><li class="carbon-ad"><script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=mongoosejscom" id="_carbonads_js"></script></li></ul></div></div><div class="container"><div id="content"><h2 id="-middleware-">中间件(Middleware)</h2>
+<p>中间件(也叫做预处理和后处理<em>钩子</em>)是传入控制异步函数执行的函数。
+中间件指定于schema层，对于编写<a href="./plugins.html">插件</a>非常有用。
+Mongoose 4.x版本拥有4种中间件：
+document(文档)中间件、model(模型)中间件、aggregate(聚合)中间件和query(查询)中间件。
+document中间件在下面的文档函数中是支持的。
+在document中间件中，<code>this</code>指向此document。</p>
 <ul>
 <li><a href="./api.html#document_Document-init">init</a></li>
 <li><a href="./api.html#document_Document-validate">validate</a></li>
 <li><a href="./api.html#model_Model-save">save</a></li>
 <li><a href="./api.html#model_Model-remove">remove</a></li>
 </ul>
-<p>Query middleware is supported for the following Model and Query functions.
-In query middleware functions, <code>this</code> refers to the query.</p>
+<p>query中间件支持下面的 Model 和 Query 函数。
+<code>this</code>指向此query。</p>
 <ul>
 <li><a href="./api.html#query_Query-count">count</a></li>
 <li><a href="./api.html#query_Query-find">find</a></li>
@@ -22,39 +21,37 @@ In query middleware functions, <code>this</code> refers to the query.</p>
 <li><a href="./api.html#query_Query-findOneAndUpdate">findOneAndUpdate</a></li>
 <li><a href="./api.html#query_Query-update">update</a></li>
 </ul>
-<p>Aggregate middleware is for <code>MyModel.aggregate()</code>. Aggregate middleware
-executes when you call <code>exec()</code> on an aggregate object.
-In aggregate middleware, <code>this</code> refers to the <a href="./api.html#model_Model.aggregate">aggregation object</a>.</p>
+<p>Aggregate 中间件用于 <code>MyModel.aggregate()</code>。
+当你在aggregate对象上调用 <code>exec()</code> 时，Aggregate中间件将会执行。
+在Aggregate中间件中， <code>this</code> 指向 <a href="./api.html#model_Model.aggregate">aggregation object</a>。</p>
 <ul>
-<li><a href="./api.html#model_Model.aggregate">aggregate</a></li>
+<li><a href="./api.html#model_Model.aggregate">聚合(aggregate)</a></li>
 </ul>
-<p>Model middleware is supported for the following model functions.
-In model middleware functions, <code>this</code> refers to the model.</p>
+<p>Model中间件支持下面的model函数，<code>this</code> 指向此model。</p>
 <ul>
 <li><a href="./api.html#model_Model.insertMany">insertMany</a></li>
 </ul>
-<p>All middleware types support pre and post hooks.
-How pre and post hooks work is described in more detail below.</p>
-<p><strong>Note:</strong> There is no query hook for <code>remove()</code>, only for documents.
-If you set a &#39;remove&#39; hook, it will be fired when you call <code>myDoc.remove()</code>,
-not when you call <code>MyModel.remove()</code>.
-<strong>Note:</strong> The <code>create()</code> function fires <code>save()</code> hooks.</p>
-<h3 id="pre"><a href="#pre">Pre</a></h3>
+<p>所有的中间件类型支持预处理和后处理钩子。
+下面将会详细介绍预处理和后处理钩子。</p>
+<p><strong>注意：</strong> <code>remove()</code> 对于query没有钩子，只有document有。
+如果你设置了一个&#39;remove&#39;钩子，它将会在你调用<code>myDoc.remove()</code>时触发，
+而不是在调用<code>MyModel.remove()</code>时。
+<strong>注意：</strong> <code>create()</code>函数会触发 <code>save()</code> 钩子。</p>
+<h3 id="pre"><a href="#pre">预处理(Pre)</a></h3>
 
-<p>There are two types of <code>pre</code> hooks, serial and parallel.</p>
-<h4 id="serial">Serial</h4>
+<p>有两种预处理钩子，分别是串行和并行。</p>
+<h4 id="serial">串行(Serial)</h4>
 
-<p>Serial middleware functions are executed one after another, when each
-middleware calls <code>next</code>.</p>
+<p>串行中间件函数在每一个中间件调用 <code>next</code> 后，会一个接着一个地执行。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema(..);
 schema.pre(<span class="hljs-string">'save'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">next</span>) </span>{
   <span class="hljs-comment">// do stuff</span>
   next();
 });
 </code></pre>
-<p>The <code>next()</code> call does <strong>not</strong> stop the rest of the code in your middleware function from executing. Use
-<a href="https://www.bennadel.com/blog/2323-use-a-return-statement-when-invoking-callbacks-especially-in-a-guard-statement.htm">the early <code>return</code> pattern</a>
-to prevent the rest of your middleware function from running when you call <code>next()</code>.</p>
+<p>调用 <code>next()</code> <strong>不会</strong> 终止中间件中其他代码的执行。
+在其他代码之前使用 <a href="https://www.bennadel.com/blog/2323-use-a-return-statement-when-invoking-callbacks-especially-in-a-guard-statement.htm"><code>return</code></a>
+可以在调用 <code>next()</code> 时，阻止其他代码在中间件中执行。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema(..);
 schema.pre(<span class="hljs-string">'save'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">next</span>) </span>{
   <span class="hljs-keyword">if</span> (foo()) {
@@ -66,49 +63,49 @@ schema.pre(<span class="hljs-string">'save'</span>, <span class="hljs-function">
   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'after next'</span>);
 });
 </code></pre>
-<h4 id="parallel">Parallel</h4>
+<h4 id="parallel">并行(Parallel)</h4>
 
-<p>Parallel middleware offer more fine-grained flow control.</p>
+<p>并行中间件提供更细粒度的流控制。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema(..);
 
-<span class="hljs-comment">// `true` means this is a parallel middleware. You **must** specify `true`</span>
-<span class="hljs-comment">// as the second parameter if you want to use parallel middleware.</span>
+<span class="hljs-comment">// `true` 以为着这是一个并行中间件。 </span>
+<span class="hljs-comment">// 如果想要使用并行中间件，你**必须**指定 `true` 为第二个参数。</span>
 schema.pre(<span class="hljs-string">'save'</span>, <span class="hljs-literal">true</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">next, done</span>) </span>{
   <span class="hljs-comment">// calling next kicks off the next middleware in parallel</span>
   next();
   setTimeout(done, <span class="hljs-number">100</span>);
 });
 </code></pre>
-<p>The hooked method, in this case <code>save</code>, will not be executed until <code>done</code>
-is called by each middleware.</p>
-<h4 id="use-cases">Use Cases</h4>
+<p>在 <code>save</code> 这种情况，钩子方法直到每一个中间件的 <code>done</code> 被调用后才会执行。</p>
+<h4 id="use-cases">使用案例(Use Cases)</h4>
 
-<p>Middleware are useful for atomizing model logic. Here are some other ideas:</p>
+<p>中间件对于分离model逻辑非常有用。下面是一些其他建议：
+Middleware are useful for atomizing model logic. Here are some other ideas:</p>
 <ul>
-<li>complex validation</li>
-<li>removing dependent documents (removing a user removes all his blogposts)</li>
-<li>asynchronous defaults</li>
-<li>asynchronous tasks that a certain action triggers</li>
+<li>复合验证</li>
+<li>删除依赖的document(删除用户的时候，删除他的所有博客)</li>
+<li>默认异步</li>
+<li>一个确定的任务触发一些异步任务</li>
 </ul>
-<h4 id="error-handling">Error handling</h4>
+<h4 id="error-handling">错误处理(Error handling)</h4>
 
-<p>If any middleware calls <code>next</code> or <code>done</code> with a parameter of type <code>Error</code>,
-the flow is interrupted, and the error is passed to the callback.</p>
+<p>如果任意中间件使用 <code>Error</code> 类的参数作为来调用 <code>next</code> 或 <code>done</code>，执行流将会被打断，
+并且错误将会被传入回调函数中。</p>
 <pre><code class="lang-javascript">schema.pre(<span class="hljs-string">'save'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">next</span>) </span>{
   <span class="hljs-keyword">var</span> err = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'something went wrong'</span>);
   next(err);
 });
 
-<span class="hljs-comment">// later...</span>
+<span class="hljs-comment">// 然后...</span>
 
 myDoc.save(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
-  <span class="hljs-built_in">console</span>.log(err.message) <span class="hljs-comment">// something went wrong</span>
+  <span class="hljs-built_in">console</span>.log(err.message) <span class="hljs-comment">// 发生错误时</span>
 });
 </code></pre>
-<h3 id="post"><a href="#post">Post middleware</a></h3>
+<h3 id="post"><a href="#post">Post中间件(Post middleware)</a></h3>
 
-<p><a href="/docs/api.html#schema_Schema-post">post</a> middleware are executed <em>after</em>
-the hooked method and all of its <code>pre</code> middleware have completed.</p>
+<p><a href="/docs/api.html#schema_Schema-post">post</a>中间件会在钩子方法<em>之后</em>执行，
+并且所有中间件的 <code>pre</code> 都已经执行完毕。</p>
 <pre><code class="lang-javascript">schema.post(<span class="hljs-string">'init'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">doc</span>) </span>{
   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'%s has been initialized from the db'</span>, doc._id);
 });
@@ -122,12 +119,11 @@ schema.post(<span class="hljs-string">'remove'</span>, <span class="hljs-functio
   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'%s has been removed'</span>, doc._id);
 });
 </code></pre>
-<h3 id="post-async"><a href="#post-async">Asynchronous Post Hooks</a></h3>
+<h3 id="post-async"><a href="#post-async">异步post钩子(Asynchronous Post Hooks)</a></h3>
 
-<p>If your post hook function takes at least 2 parameters, mongoose will
-assume the second parameter is a <code>next()</code> function that you will call to
-trigger the next middleware in the sequence.</p>
-<pre><code class="lang-javascript"><span class="hljs-comment">// Takes 2 parameters: this is an asynchronous post hook</span>
+<p>如果你的post钩子函数接收至少两个参数，则mongoose将会假定第二个参数为一个 <code>next()</code> 函数，
+你可以按顺序通过调用它，从而触发接下来的中间件。</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// 接收2个参数: 这是一个异步post钩子</span>
 schema.post(<span class="hljs-string">'save'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">doc, next</span>) </span>{
   setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'post1'</span>);
@@ -136,18 +132,18 @@ schema.post(<span class="hljs-string">'save'</span>, <span class="hljs-function"
   }, <span class="hljs-number">10</span>);
 });
 
-<span class="hljs-comment">// Will not execute until the first middleware calls `next()`</span>
+<span class="hljs-comment">// 直到第一个中间件调用 `next()` 后才会执行</span>
 schema.post(<span class="hljs-string">'save'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">doc, next</span>) </span>{
   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'post2'</span>);
   next();
 });
 </code></pre>
-<h3 id="order"><a href="#order">Save/Validate Hooks</a></h3>
+<h3 id="order"><a href="#order">保存/验证钩子(Save/Validate Hooks)</a></h3>
 
-<p>The <code>save()</code> function triggers <code>validate()</code> hooks, because mongoose
-has a built-in <code>pre(&#39;save&#39;)</code> hook that calls <code>validate()</code>. This means
-that all <code>pre(&#39;validate&#39;)</code> and <code>post(&#39;validate&#39;)</code> hooks get called
-<strong>before</strong> any <code>pre(&#39;save&#39;)</code> hooks.</p>
+<p><code>save()</code> 函数会触发 <code>validate()</code> 钩子，
+因为mongoose有一个内建会调用 <code>validate()</code> 的 <code>pre(&#39;save&#39;)</code> 钩子。
+这意味着所有的 <code>pre(&#39;validate&#39;)</code> 和 <code>post(&#39;validate&#39;)</code> 钩子，
+会在所有的 <code>pre(&#39;save&#39;)</code> <strong>之前</strong>被调用。</p>
 <pre><code class="lang-javascript">schema.pre(<span class="hljs-string">'validate'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'this gets printed first'</span>);
 });
@@ -161,12 +157,12 @@ schema.post(<span class="hljs-string">'save'</span>, <span class="hljs-function"
   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'this gets printed fourth'</span>);
 });
 </code></pre>
-<h3 id="notes"><a href="#notes">Notes on findAndUpdate() and Query Middleware</a></h3>
+<h3 id="notes"><a href="#notes">使用findAndUpdate()和Query中间件的注意事项(Notes on findAndUpdate() and Query Middleware)</a></h3>
 
-<p>Pre and post <code>save()</code> hooks are <strong>not</strong> executed on <code>update()</code>,
-<code>findOneAndUpdate()</code>, etc. You can see a more detailed discussion why in
-<a href="http://github.com/Automattic/mongoose/issues/964">this GitHub issue</a>.
-Mongoose 4.0 introduced distinct hooks for these functions.</p>
+<p>在 <code>update()</code>、<code>findOneAndUpdate()</code> 等方法上，
+<code>save()</code> 的预处理和后处理钩子将<strong>不会</strong>执行。
+你可以在这个<a href="http://github.com/Automattic/mongoose/issues/964">github issue</a>中，
+查看更深入的讨论。Mongoose 4.0 对这些函数采用了清晰的钩子。</p>
 <pre><code class="lang-javascript">schema.pre(<span class="hljs-string">'find'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">this</span> <span class="hljs-keyword">instanceof</span> mongoose.Query); <span class="hljs-comment">// true</span>
   <span class="hljs-keyword">this</span>.start = <span class="hljs-built_in">Date</span>.now();
@@ -180,38 +176,35 @@ schema.post(<span class="hljs-string">'find'</span>, <span class="hljs-function"
   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'find() took '</span> + (<span class="hljs-built_in">Date</span>.now() - <span class="hljs-keyword">this</span>.start) + <span class="hljs-string">' millis'</span>);
 });
 </code></pre>
-<p>Query middleware differs from document middleware in a subtle but
-important way: in document middleware, <code>this</code> refers to the document
-being updated. In query middleware, mongoose doesn&#39;t necessarily have
-a reference to the document being updated, so <code>this</code> refers to the
-<strong>query</strong> object rather than the document being updated.</p>
-<p>For instance, if you wanted to add an <code>updatedAt</code> timestamp to every
-<code>update()</code> call, you would use the following pre hook.</p>
+<p>Query中间件相比于document中间件有一些微妙但很重要的不同点：
+在document中间件中，更新文档时，<code>this</code> 指向该文档。
+在Query中间件中，更新文档时，获取文档的引用不是必须的。
+所以 <code>this</code> 指向 <strong>query</strong> 对象而不是被更新的文档对象。</p>
+<p>对于实例，如果你想要在调用 <code>update()</code> 时添加一个
+<code>updatedAt</code> 时间戳，你需要使用下面的预处理钩子。</p>
 <pre><code class="lang-javascript">schema.pre(<span class="hljs-string">'update'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">this</span>.update({},{ $set: { updatedAt: <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>() } });
 });
 </code></pre>
-<h3 id="error-handling"><a href="#error-handling">Error Handling Middleware</a></h3>
+<h3 id="error-handling"><a href="#error-handling">错误处理中间件(Error Handling Middleware)</a></h3>
 
-<p><em>New in 4.5.0</em></p>
-<p>Middleware execution normally stops the first time a piece of middleware
-calls <code>next()</code> with an error. However, there is a special kind of post
-middleware called &quot;error handling middleware&quot; that executes specifically
-when an error occurs.</p>
-<p>Error handling middleware is defined as middleware that takes one extra
-parameter: the &#39;error&#39; that occurred as the first parameter to the function.
-Error handling middleware can then transform the error however you want.</p>
+<p><em>v4.5.0 新增</em></p>
+<p>正常情况下，如果中间件向 <code>next()</code> 传入一个错误 ，中间件的执行将会终止。
+然而，有一种叫做 &quot;错误处理中间件&quot; 的特殊后处理中间件，在发生错误时，仍然可以继续执行。</p>
+<p>错误处理中间件是一个可以接受一个额外参数的中间件：
+&quot;错误&quot; 对象作为函数的第一个参数。
+然后错误处理中间件可以将错误对象转换成你需要的形式。</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> schema = <span class="hljs-keyword">new</span> Schema({
   name: {
     type: <span class="hljs-built_in">String</span>,
-    <span class="hljs-comment">// Will trigger a MongoError with code 11000 when</span>
-    <span class="hljs-comment">// you save a duplicate</span>
+    <span class="hljs-comment">// 当你保存一个重复的文档时，</span>
+    <span class="hljs-comment">// 将会触发一个错误码为 11000 的 MongoError</span>
     unique: <span class="hljs-literal">true</span>
   }
 });
 
-<span class="hljs-comment">// Handler **must** take 3 parameters: the error that occurred, the document</span>
-<span class="hljs-comment">// in question, and the `next()` function</span>
+<span class="hljs-comment">// 处理函数**必须**接收3个参数：</span>
+<span class="hljs-comment">// 发生的错误对象、发生问题的文档对象、`next()` 函数</span>
 schema.post(<span class="hljs-string">'save'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error, doc, next</span>) </span>{
   <span class="hljs-keyword">if</span> (error.name === <span class="hljs-string">'MongoError'</span> &amp;&amp; error.code === <span class="hljs-number">11000</span>) {
     next(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'There was a duplicate key error'</span>));
@@ -220,16 +213,16 @@ schema.post(<span class="hljs-string">'save'</span>, <span class="hljs-function"
   }
 });
 
-<span class="hljs-comment">// Will trigger the `post('save')` error handler</span>
+<span class="hljs-comment">// 将会触发 `post('save')` 的错误处理</span>
 Person.create([{ name: <span class="hljs-string">'Axl Rose'</span> }, { name: <span class="hljs-string">'Axl Rose'</span> }]);
 </code></pre>
-<p>Error handling middleware also works with query middleware. You can
-also define a post <code>update()</code> hook that will catch MongoDB duplicate key
-errors.</p>
-<pre><code class="lang-javascript"><span class="hljs-comment">// The same E11000 error can occur when you call `update()`</span>
-<span class="hljs-comment">// This function **must** take 3 parameters. If you use the</span>
-<span class="hljs-comment">// `passRawResult` function, this function **must** take 4</span>
-<span class="hljs-comment">// parameters</span>
+<p>错误处理中间件在query中间件中也可以使用。
+你同样可以定义一个后处理 <code>update()</code> 钩子，
+从而可以捕获key重复时的错误。</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// 当调用 `update()` 时，将触发同样的E11000错误</span>
+<span class="hljs-comment">// 此函数必**须接**收3个参数。This function **must** take 3 parameters. If you use the</span>
+<span class="hljs-comment">// 如果使用了 `passRawResult` 函数，</span>
+<span class="hljs-comment">// 函数就必须传入4个参数</span>
 schema.post(<span class="hljs-string">'update'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error, res, next</span>) </span>{
   <span class="hljs-keyword">if</span> (error.name === <span class="hljs-string">'MongoError'</span> &amp;&amp; error.code === <span class="hljs-number">11000</span>) {
     next(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'There was a duplicate key error'</span>));
@@ -245,10 +238,10 @@ Person.create(people, <span class="hljs-function"><span class="hljs-keyword">fun
   });
 });
 </code></pre>
-<h3 id="next">Next Up</h3>
+<h3 id="next">接下来</h3>
 
-<p>Now that we&#39;ve covered middleware, let&#39;s take a look at Mongoose&#39;s approach
-to faking JOINs with its query <a href="/docs/populate.html">population</a> helper.</p>
+<p>我们已经介绍完中间件了，接下来让我们看一下
+Mongoose通过它的query<a href="/docs/populate.html">填充</a>辅助函数修改连接的方法。</p>
 </div></div><script type="text/javascript">!function(name,path,ctx){
   var latest,prev=name!=='Keen'&&window.Keen?window.Keen:false;ctx[name]=ctx[name]||{ready:function(fn){var h=document.getElementsByTagName('head')[0],s=document.createElement('script'),w=window,loaded;s.onload=s.onerror=s.onreadystatechange=function(){if((s.readyState&&!(/^c|loade/.test(s.readyState)))||loaded){return}s.onload=s.onreadystatechange=null;loaded=1;latest=w.Keen;if(prev){w.Keen=prev}else{try{delete w.Keen}catch(e){w.Keen=void 0}}ctx[name]=latest;ctx[name].ready(fn)};s.async=1;s.src=path;h.parentNode.insertBefore(s,h)}}
 }('KeenAsync','https://d26b395fwzu5fz.cloudfront.net/keen-tracking-1.1.3.min.js',this);

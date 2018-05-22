@@ -2,23 +2,22 @@ extends layout
 
 block content
   :markdown
-    ## Middleware
+    ## 中间件(Middleware)
 
-    Middleware (also called pre and post *hooks*) are functions which are passed
-    control during execution of asynchronous functions. Middleware is specified
-    on the schema level and is useful for writing [plugins](./plugins.html).
-    Mongoose 4.x has 4 types
-    of middleware: document middleware, model middleware, aggregate middleware, and query middleware.
-    Document middleware is supported for the following document functions.
-    In document middleware functions, `this` refers to the document.
+    中间件(也叫做预处理和后处理*钩子*)是传入控制异步函数执行的函数。
+    中间件指定于schema层，对于编写[插件](./plugins.html)非常有用。
+    Mongoose 4.x版本拥有4种中间件：
+    document(文档)中间件、model(模型)中间件、aggregate(聚合)中间件和query(查询)中间件。
+    document中间件在下面的文档函数中是支持的。
+    在document中间件中，`this`指向此document。
 
     * [init](./api.html#document_Document-init)
     * [validate](./api.html#document_Document-validate)
     * [save](./api.html#model_Model-save)
     * [remove](./api.html#model_Model-remove)
 
-    Query middleware is supported for the following Model and Query functions.
-    In query middleware functions, `this` refers to the query.
+    query中间件支持下面的 Model 和 Query 函数。
+    `this`指向此query。
 
     * [count](./api.html#query_Query-count)
     * [find](./api.html#query_Query-find)
@@ -27,33 +26,31 @@ block content
     * [findOneAndUpdate](./api.html#query_Query-findOneAndUpdate)
     * [update](./api.html#query_Query-update)
 
-    Aggregate middleware is for `MyModel.aggregate()`. Aggregate middleware
-    executes when you call `exec()` on an aggregate object.
-    In aggregate middleware, `this` refers to the [aggregation object](./api.html#model_Model.aggregate).
+    Aggregate 中间件用于 `MyModel.aggregate()`。
+    当你在aggregate对象上调用 `exec()` 时，Aggregate中间件将会执行。
+    在Aggregate中间件中， `this` 指向 [aggregation object](./api.html#model_Model.aggregate)。
 
-    * [aggregate](./api.html#model_Model.aggregate)
+    * [聚合(aggregate)](./api.html#model_Model.aggregate)
 
-    Model middleware is supported for the following model functions.
-    In model middleware functions, `this` refers to the model.
+    Model中间件支持下面的model函数，`this` 指向此model。
 
     * [insertMany](./api.html#model_Model.insertMany)
 
-    All middleware types support pre and post hooks.
-    How pre and post hooks work is described in more detail below.
+    所有的中间件类型支持预处理和后处理钩子。
+    下面将会详细介绍预处理和后处理钩子。
 
-    **Note:** There is no query hook for `remove()`, only for documents.
-    If you set a 'remove' hook, it will be fired when you call `myDoc.remove()`,
-    not when you call `MyModel.remove()`.
-    **Note:** The `create()` function fires `save()` hooks.
+    **注意：** `remove()` 对于query没有钩子，只有document有。
+    如果你设置了一个'remove'钩子，它将会在你调用`myDoc.remove()`时触发，
+    而不是在调用`MyModel.remove()`时。
+    **注意：** `create()`函数会触发 `save()` 钩子。
 
-    <h3 id="pre"><a href="#pre">Pre</a></h3>
+    <h3 id="pre"><a href="#pre">预处理(Pre)</a></h3>
 
-    There are two types of `pre` hooks, serial and parallel.
+    有两种预处理钩子，分别是串行和并行。
 
-    <h4 id="serial">Serial</h4>
+    <h4 id="serial">串行(Serial)</h4>
 
-    Serial middleware functions are executed one after another, when each
-    middleware calls `next`.
+    串行中间件函数在每一个中间件调用 `next` 后，会一个接着一个地执行。
 
     ```javascript
     var schema = new Schema(..);
@@ -63,9 +60,9 @@ block content
     });
     ```
 
-    The `next()` call does **not** stop the rest of the code in your middleware function from executing. Use
-    [the early `return` pattern](https://www.bennadel.com/blog/2323-use-a-return-statement-when-invoking-callbacks-especially-in-a-guard-statement.htm)
-    to prevent the rest of your middleware function from running when you call `next()`.
+    调用 `next()` **不会** 终止中间件中其他代码的执行。
+    在其他代码之前使用 [`return`](https://www.bennadel.com/blog/2323-use-a-return-statement-when-invoking-callbacks-especially-in-a-guard-statement.htm)
+    可以在调用 `next()` 时，阻止其他代码在中间件中执行。
 
     ```javascript
     var schema = new Schema(..);
@@ -80,15 +77,15 @@ block content
     });
     ```
 
-    <h4 id="parallel">Parallel</h4>
+    <h4 id="parallel">并行(Parallel)</h4>
 
-    Parallel middleware offer more fine-grained flow control.
+    并行中间件提供更细粒度的流控制。
 
     ```javascript
     var schema = new Schema(..);
 
-    // `true` means this is a parallel middleware. You **must** specify `true`
-    // as the second parameter if you want to use parallel middleware.
+    // `true` 以为着这是一个并行中间件。 
+    // 如果想要使用并行中间件，你**必须**指定 `true` 为第二个参数。
     schema.pre('save', true, function(next, done) {
       // calling next kicks off the next middleware in parallel
       next();
@@ -96,22 +93,22 @@ block content
     });
     ```
 
-    The hooked method, in this case `save`, will not be executed until `done`
-    is called by each middleware.
+    在 `save` 这种情况，钩子方法直到每一个中间件的 `done` 被调用后才会执行。
 
-    <h4 id="use-cases">Use Cases</h4>
+    <h4 id="use-cases">使用案例(Use Cases)</h4>
 
+    中间件对于分离model逻辑非常有用。下面是一些其他建议：
     Middleware are useful for atomizing model logic. Here are some other ideas:
 
-    * complex validation
-    * removing dependent documents (removing a user removes all his blogposts)
-    * asynchronous defaults
-    * asynchronous tasks that a certain action triggers
+    * 复合验证
+    * 删除依赖的document(删除用户的时候，删除他的所有博客)
+    * 默认异步
+    * 一个确定的任务触发一些异步任务
 
-    <h4 id="error-handling">Error handling</h4>
+    <h4 id="error-handling">错误处理(Error handling)</h4>
 
-    If any middleware calls `next` or `done` with a parameter of type `Error`,
-    the flow is interrupted, and the error is passed to the callback.
+    如果任意中间件使用 `Error` 类的参数作为来调用 `next` 或 `done`，执行流将会被打断，
+    并且错误将会被传入回调函数中。
 
     ```javascript
     schema.pre('save', function(next) {
@@ -119,17 +116,17 @@ block content
       next(err);
     });
 
-    // later...
+    // 然后...
 
     myDoc.save(function(err) {
-      console.log(err.message) // something went wrong
+      console.log(err.message) // 发生错误时
     });
     ```
 
-    <h3 id="post"><a href="#post">Post middleware</a></h3>
+    <h3 id="post"><a href="#post">Post中间件(Post middleware)</a></h3>
 
-    [post](/docs/api.html#schema_Schema-post) middleware are executed _after_
-    the hooked method and all of its `pre` middleware have completed.
+    [post](/docs/api.html#schema_Schema-post)中间件会在钩子方法_之后_执行，
+    并且所有中间件的 `pre` 都已经执行完毕。
 
     ```javascript
     schema.post('init', function(doc) {
@@ -146,14 +143,13 @@ block content
     });
     ```
 
-    <h3 id="post-async"><a href="#post-async">Asynchronous Post Hooks</a></h3>
+    <h3 id="post-async"><a href="#post-async">异步post钩子(Asynchronous Post Hooks)</a></h3>
 
-    If your post hook function takes at least 2 parameters, mongoose will
-    assume the second parameter is a `next()` function that you will call to
-    trigger the next middleware in the sequence.
+    如果你的post钩子函数接收至少两个参数，则mongoose将会假定第二个参数为一个 `next()` 函数，
+    你可以按顺序通过调用它，从而触发接下来的中间件。
 
     ```javascript
-    // Takes 2 parameters: this is an asynchronous post hook
+    // 接收2个参数: 这是一个异步post钩子
     schema.post('save', function(doc, next) {
       setTimeout(function() {
         console.log('post1');
@@ -162,19 +158,19 @@ block content
       }, 10);
     });
 
-    // Will not execute until the first middleware calls `next()`
+    // 直到第一个中间件调用 `next()` 后才会执行
     schema.post('save', function(doc, next) {
       console.log('post2');
       next();
     });
     ```
 
-    <h3 id="order"><a href="#order">Save/Validate Hooks</a></h3>
+    <h3 id="order"><a href="#order">保存/验证钩子(Save/Validate Hooks)</a></h3>
 
-    The `save()` function triggers `validate()` hooks, because mongoose
-    has a built-in `pre('save')` hook that calls `validate()`. This means
-    that all `pre('validate')` and `post('validate')` hooks get called
-    **before** any `pre('save')` hooks.
+    `save()` 函数会触发 `validate()` 钩子，
+    因为mongoose有一个内建会调用 `validate()` 的 `pre('save')` 钩子。
+    这意味着所有的 `pre('validate')` 和 `post('validate')` 钩子，
+    会在所有的 `pre('save')` **之前**被调用。
 
     ```javascript
     schema.pre('validate', function() {
@@ -191,12 +187,12 @@ block content
     });
     ```
 
-    <h3 id="notes"><a href="#notes">Notes on findAndUpdate() and Query Middleware</a></h3>
+    <h3 id="notes"><a href="#notes">使用findAndUpdate()和Query中间件的注意事项(Notes on findAndUpdate() and Query Middleware)</a></h3>
 
-    Pre and post `save()` hooks are **not** executed on `update()`,
-    `findOneAndUpdate()`, etc. You can see a more detailed discussion why in
-    [this GitHub issue](http://github.com/Automattic/mongoose/issues/964).
-    Mongoose 4.0 introduced distinct hooks for these functions.
+    在 `update()`、`findOneAndUpdate()` 等方法上，
+    `save()` 的预处理和后处理钩子将**不会**执行。
+    你可以在这个[github issue](http://github.com/Automattic/mongoose/issues/964)中，
+    查看更深入的讨论。Mongoose 4.0 对这些函数采用了清晰的钩子。
 
     ```javascript
     schema.pre('find', function() {
@@ -213,14 +209,13 @@ block content
     });
     ```
 
-    Query middleware differs from document middleware in a subtle but
-    important way: in document middleware, `this` refers to the document
-    being updated. In query middleware, mongoose doesn't necessarily have
-    a reference to the document being updated, so `this` refers to the
-    **query** object rather than the document being updated.
+    Query中间件相比于document中间件有一些微妙但很重要的不同点：
+    在document中间件中，更新文档时，`this` 指向该文档。
+    在Query中间件中，更新文档时，获取文档的引用不是必须的。
+    所以 `this` 指向 **query** 对象而不是被更新的文档对象。
 
-    For instance, if you wanted to add an `updatedAt` timestamp to every
-    `update()` call, you would use the following pre hook.
+    对于实例，如果你想要在调用 `update()` 时添加一个
+    `updatedAt` 时间戳，你需要使用下面的预处理钩子。
 
     ```javascript
     schema.pre('update', function() {
@@ -228,31 +223,29 @@ block content
     });
     ```
 
-    <h3 id="error-handling"><a href="#error-handling">Error Handling Middleware</a></h3>
+    <h3 id="error-handling"><a href="#error-handling">错误处理中间件(Error Handling Middleware)</a></h3>
 
-    _New in 4.5.0_
+    _v4.5.0 新增_
 
-    Middleware execution normally stops the first time a piece of middleware
-    calls `next()` with an error. However, there is a special kind of post
-    middleware called "error handling middleware" that executes specifically
-    when an error occurs.
+    正常情况下，如果中间件向 `next()` 传入一个错误 ，中间件的执行将会终止。
+    然而，有一种叫做 "错误处理中间件" 的特殊后处理中间件，在发生错误时，仍然可以继续执行。
 
-    Error handling middleware is defined as middleware that takes one extra
-    parameter: the 'error' that occurred as the first parameter to the function.
-    Error handling middleware can then transform the error however you want.
+    错误处理中间件是一个可以接受一个额外参数的中间件：
+    "错误" 对象作为函数的第一个参数。
+    然后错误处理中间件可以将错误对象转换成你需要的形式。
 
     ```javascript
     var schema = new Schema({
       name: {
         type: String,
-        // Will trigger a MongoError with code 11000 when
-        // you save a duplicate
+        // 当你保存一个重复的文档时，
+        // 将会触发一个错误码为 11000 的 MongoError
         unique: true
       }
     });
 
-    // Handler **must** take 3 parameters: the error that occurred, the document
-    // in question, and the `next()` function
+    // 处理函数**必须**接收3个参数：
+    // 发生的错误对象、发生问题的文档对象、`next()` 函数
     schema.post('save', function(error, doc, next) {
       if (error.name === 'MongoError' && error.code === 11000) {
         next(new Error('There was a duplicate key error'));
@@ -261,19 +254,19 @@ block content
       }
     });
 
-    // Will trigger the `post('save')` error handler
+    // 将会触发 `post('save')` 的错误处理
     Person.create([{ name: 'Axl Rose' }, { name: 'Axl Rose' }]);
     ```
 
-    Error handling middleware also works with query middleware. You can
-    also define a post `update()` hook that will catch MongoDB duplicate key
-    errors.
+    错误处理中间件在query中间件中也可以使用。
+    你同样可以定义一个后处理 `update()` 钩子，
+    从而可以捕获key重复时的错误。
 
     ```javascript
-    // The same E11000 error can occur when you call `update()`
-    // This function **must** take 3 parameters. If you use the
-    // `passRawResult` function, this function **must** take 4
-    // parameters
+    // 当调用 `update()` 时，将触发同样的E11000错误
+    // 此函数必**须接**收3个参数。This function **must** take 3 parameters. If you use the
+    // 如果使用了 `passRawResult` 函数，
+    // 函数就必须传入4个参数
     schema.post('update', function(error, res, next) {
       if (error.name === 'MongoError' && error.code === 11000) {
         next(new Error('There was a duplicate key error'));
@@ -290,7 +283,7 @@ block content
     });
     ```
 
-    <h3 id="next">Next Up</h3>
+    <h3 id="next">接下来</h3>
 
-    Now that we've covered middleware, let's take a look at Mongoose's approach
-    to faking JOINs with its query [population](/docs/populate.html) helper.
+    我们已经介绍完中间件了，接下来让我们看一下
+    Mongoose通过它的query[填充](/docs/populate.html)辅助函数修改连接的方法。
